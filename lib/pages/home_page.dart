@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:food_sales_recording_application/utils/app_colors.dart';
+import 'package:food_sales_recording_application/widgets/date_row.dart';
+import 'package:food_sales_recording_application/widgets/icon_box.dart';
+import 'package:food_sales_recording_application/widgets/title_text.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
+
+import '../widgets/detail_text.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,21 +31,32 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Saturday, 29 July 2023"),
+                  TitleText(
+                    text: "Saturday, 29 July 2023",
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
                   Row(
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.2,
-                        height: MediaQuery.of(context).size.width * 0.2,
-                        decoration: BoxDecoration(
-                            color: Colors.orange[100],
-                            borderRadius: BorderRadius.circular(8.0)),
-                        child: FittedBox(
-                          child: Icon(
-                            Icons.assignment_outlined,
-                          ),
-                        ),
+                      IconBox(
+                        icon: Icons.assignment_outlined,
+                        iconColor: Appcolors.darkColor,
+                        backgroundColor: Appcolors.lightColor,
+                        size: MediaQuery.of(context).size.width * 0.16,
                       ),
+                      // Container(
+                      //   width: MediaQuery.of(context).size.width * 0.16,
+                      //   height: MediaQuery.of(context).size.width * 0.16,
+                      //   decoration: BoxDecoration(
+                      //       color: Colors.orange[100],
+                      //       borderRadius: BorderRadius.circular(8.0)),
+                      //   child: FittedBox(
+                      //     child: Icon(
+                      //       Icons.assignment_outlined,
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(
                         width: 20,
                       ),
@@ -47,28 +64,43 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Target This Month"),
-                            Text("IDR 1,000,000"),
+                            DetailText(
+                              text: "Target This Month",
+                              color: Appcolors.lightColor,
+                              size: 10,
+                            ),
+                            TitleText(
+                              text: "IDR 1,000,000",
+                              isBold: true,
+                            ),
                             Container(
-                              height: 20,
+                              height: 24,
                               decoration: BoxDecoration(
                                 // color: Colors.blue,
                                 gradient: LinearGradient(colors: [
-                                  Colors.green,
-                                  Colors.green,
-                                  Colors.white,
-                                  Colors.white
+                                  Appcolors.greenColor,
+                                  Appcolors.greenColor,
+                                  Appcolors.whiteColor,
+                                  Appcolors.whiteColor,
                                 ], stops: [
                                   0.0,
-                                  0.5,
-                                  0.5,
+                                  0.3,
+                                  0.3,
                                   1.0
                                 ]),
                                 border:
                                     Border.all(color: Colors.black, width: 1.0),
                                 borderRadius: BorderRadius.circular(4.0),
                               ),
-                            )
+                            ),
+                            Container(
+                              alignment: Alignment.centerRight,
+                              child: DetailText(
+                                text: "700,000 more",
+                                color: Appcolors.lightColor,
+                                size: 10,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -77,16 +109,20 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              color: Colors.grey[300],
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Saturday, 29 July 2023"),
-                    Text("IDR 525,000")
-                  ]),
+            DateRow(
+              date: "Saturday, 29 July 2023",
+              total: 525000,
             ),
+            // Container(
+            //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            //   color: Colors.grey[300],
+            //   child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         Text("Saturday, 29 July 2023"),
+            //         Text("IDR 525,000")
+            //       ]),
+            // ),
             Expanded(
               child: Container(
                 color: Colors.white,
@@ -95,7 +131,6 @@ class _HomePageState extends State<HomePage> {
                   itemCount: 10,
                   itemBuilder: (context, index) {
                     return Container(
-                      // margin: EdgeInsets.symmetric(horizontal: 20),
                       color: Colors.white,
                       child: ListTileTheme(
                         shape: Border.all(color: Colors.green),
@@ -132,23 +167,33 @@ class _HomePageState extends State<HomePage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Container(
-                                          margin: EdgeInsets.only(right: 4),
-                                          width: MediaQuery.of(context)
+                                        IconBox(
+                                          icon: Icons.warning_amber_rounded,
+                                          iconColor: Appcolors.mediumColor,
+                                          backgroundColor: Colors.transparent,
+                                          size: MediaQuery.of(context)
                                                   .size
                                                   .width *
                                               0.15,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.15,
-                                          child: FittedBox(
-                                            child: Icon(
-                                              Icons.warning_amber_rounded,
-                                              color: Colors.brown,
-                                            ),
-                                          ),
+                                          marginRight: 4,
                                         ),
+                                        // Container(
+                                        //   margin: EdgeInsets.only(right: 4),
+                                        //   width: MediaQuery.of(context)
+                                        //           .size
+                                        //           .width *
+                                        //       0.15,
+                                        //   height: MediaQuery.of(context)
+                                        //           .size
+                                        //           .width *
+                                        //       0.15,
+                                        //   child: FittedBox(
+                                        //     child: Icon(
+                                        //       Icons.warning_amber_rounded,
+                                        //       color: Colors.brown,
+                                        //     ),
+                                        //   ),
+                                        // ),
                                         Expanded(
                                           child: Container(
                                             child: Row(
@@ -161,11 +206,22 @@ class _HomePageState extends State<HomePage> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      Text("Kezia Angeline"),
-                                                      Text("UNPAID")
+                                                      DetailText(
+                                                        text: "Kezia Angeline",
+                                                      ),
+                                                      DetailText(
+                                                        text: "UNPAID",
+                                                        color: Appcolors
+                                                            .mediumColor,
+                                                        isBold: true,
+                                                      )
                                                     ],
                                                   ),
-                                                  Text("300,000")
+                                                  DetailText(
+                                                    text: "300,000",
+                                                    color: Appcolors.greenColor,
+                                                    isBold: true,
+                                                  )
                                                 ]),
                                           ),
                                         ),
@@ -198,7 +254,8 @@ class _HomePageState extends State<HomePage> {
                                                                 .size
                                                                 .width *
                                                             0.15,
-                                                        child: Text("1x"),
+                                                        child: DetailText(
+                                                            text: "1x"),
                                                       ),
                                                       Expanded(
                                                         child: Container(
@@ -207,9 +264,12 @@ class _HomePageState extends State<HomePage> {
                                                                   MainAxisAlignment
                                                                       .spaceBetween,
                                                               children: [
-                                                                Text(
-                                                                    "Beef Galantine"),
-                                                                Text("300,000")
+                                                                DetailText(
+                                                                    text:
+                                                                        "Beef Galantine"),
+                                                                DetailText(
+                                                                    text:
+                                                                        "300,000")
                                                               ]),
                                                         ),
                                                       ),
