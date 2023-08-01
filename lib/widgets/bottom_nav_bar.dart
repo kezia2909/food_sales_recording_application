@@ -3,6 +3,8 @@ import 'package:food_sales_recording_application/pages/history_page.dart';
 import 'package:food_sales_recording_application/pages/home_page.dart';
 import 'package:food_sales_recording_application/utils/app_colors.dart';
 
+import '../pages/customer_page.dart';
+
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
 
@@ -17,10 +19,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     HistoryPage(),
-    Text(
-      'Index 2: customer',
-      style: optionStyle,
-    ),
+    CustomerPage(),
     Text(
       'Index 2: menu',
       style: optionStyle,
