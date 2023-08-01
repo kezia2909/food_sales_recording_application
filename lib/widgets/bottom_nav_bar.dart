@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_sales_recording_application/pages/history_page.dart';
 import 'package:food_sales_recording_application/pages/home_page.dart';
 import 'package:food_sales_recording_application/utils/app_colors.dart';
 
@@ -15,10 +16,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    Text(
-      'Index 1: history',
-      style: optionStyle,
-    ),
+    HistoryPage(),
     Text(
       'Index 2: customer',
       style: optionStyle,
@@ -27,10 +25,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
       'Index 2: menu',
       style: optionStyle,
     ),
-    // Text(
-    //   'Index 2: add',
-    //   style: optionStyle,
-    // ),
+    Text(
+      'Index 2: add',
+      style: optionStyle,
+    ),
   ];
 
   void _onItemTapped(int index) {
@@ -63,10 +61,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
             icon: Icon(Icons.menu_book_rounded),
             label: 'Menu',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.add),
-          //   label: 'Add',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Add',
+          ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Appcolors.darkColor,
