@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:food_sales_recording_application/utils/app_colors.dart';
+import 'package:food_sales_recording_application/widgets/children_detail_item_history.dart';
 import 'package:food_sales_recording_application/widgets/date_row.dart';
 import 'package:food_sales_recording_application/widgets/icon_box.dart';
+import 'package:food_sales_recording_application/widgets/title_item_history.dart';
 import 'package:food_sales_recording_application/widgets/title_text.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 
 import '../widgets/detail_text.dart';
+import '../widgets/trailing_item_history.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,11 +25,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.amberAccent,
         child: Column(
           children: [
             Container(
-              color: Colors.brown,
+              color: Appcolors.darkColor,
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,149 +147,22 @@ class _HomePageState extends State<HomePage> {
                                 onExpansionChanged: (value) {
                                   setState(() => isExpandedList[index] = value);
                                 },
-                                trailing: Container(
-                                  margin: EdgeInsets.only(right: 20),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.1,
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.1,
-                                  child: FittedBox(
-                                    child: Icon(
-                                      isExpandedList[index]
-                                          ? Icons.keyboard_arrow_up
-                                          : Icons.keyboard_arrow_right,
-                                      color: Colors.black,
-                                    ),
-                                  ),
+                                trailing: TrailingItemHistory(
+                                  isExpanded: isExpandedList[index],
                                 ),
-                                title: Container(
-                                  margin: EdgeInsets.only(left: 20),
-                                  color: Colors.white,
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        IconBox(
-                                          icon: Icons.warning_amber_rounded,
-                                          iconColor: Appcolors.mediumColor,
-                                          backgroundColor: Colors.transparent,
-                                          size: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.15,
-                                          marginRight: 4,
-                                        ),
-                                        // Container(
-                                        //   margin: EdgeInsets.only(right: 4),
-                                        //   width: MediaQuery.of(context)
-                                        //           .size
-                                        //           .width *
-                                        //       0.15,
-                                        //   height: MediaQuery.of(context)
-                                        //           .size
-                                        //           .width *
-                                        //       0.15,
-                                        //   child: FittedBox(
-                                        //     child: Icon(
-                                        //       Icons.warning_amber_rounded,
-                                        //       color: Colors.brown,
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                        Expanded(
-                                          child: Container(
-                                            child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      DetailText(
-                                                        text: "Kezia Angeline",
-                                                      ),
-                                                      DetailText(
-                                                        text: "UNPAID",
-                                                        color: Appcolors
-                                                            .mediumColor,
-                                                        isBold: true,
-                                                      )
-                                                    ],
-                                                  ),
-                                                  DetailText(
-                                                    text: "300,000",
-                                                    color: Appcolors.greenColor,
-                                                    isBold: true,
-                                                  )
-                                                ]),
-                                          ),
-                                        ),
-                                      ]),
+                                title: TitleItemHistory(
+                                  icon: Icons.warning_amber_rounded,
+                                  title: 'Kezia Angeline',
+                                  subTitle: 'UNPAID',
+                                  total: 300000,
                                 ),
                                 children: [
                                   for (int i = 0; i < 5; i++)
-                                    Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 20),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                color: Colors.white,
-                                                child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Container(
-                                                        margin: EdgeInsets.only(
-                                                            right: 4),
-                                                        alignment: Alignment
-                                                            .centerRight,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.15,
-                                                        child: DetailText(
-                                                            text: "1x"),
-                                                      ),
-                                                      Expanded(
-                                                        child: Container(
-                                                          child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                DetailText(
-                                                                    text:
-                                                                        "Beef Galantine"),
-                                                                DetailText(
-                                                                    text:
-                                                                        "300,000")
-                                                              ]),
-                                                        ),
-                                                      ),
-                                                    ]),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.1,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.1,
-                                            ),
-                                          ],
-                                        ))
+                                    ChildrenDetailItemHistory(
+                                      pcs: 1,
+                                      name: "Beef Galantine",
+                                      total: 120000,
+                                    )
                                 ],
                               ),
                               Divider()
