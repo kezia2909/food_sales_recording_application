@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_sales_recording_application/pages/add_page.dart';
 import 'package:food_sales_recording_application/pages/history_page.dart';
 import 'package:food_sales_recording_application/pages/home_page.dart';
 import 'package:food_sales_recording_application/utils/app_colors.dart';
@@ -22,10 +23,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     HistoryPage(),
     CustomerPage(),
     MenuPage(),
-    Text(
-      'Index 2: add',
-      style: optionStyle,
-    ),
+    AddPage(),
   ];
 
   void _onItemTapped(int index) {
