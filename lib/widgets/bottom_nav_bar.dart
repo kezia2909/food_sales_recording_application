@@ -18,7 +18,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
+
+  List pages = [
     HomePage(),
     HistoryPage(),
     CustomerPage(),
@@ -36,9 +37,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: pages[_selectedIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Appcolors.darkColor,
+        unselectedItemColor: Appcolors.darkGreyColor,
+        backgroundColor: Appcolors.lightColor,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -61,11 +67,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
             label: 'Add',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Appcolors.darkColor,
-        unselectedItemColor: Appcolors.darkGreyColor,
-        onTap: _onItemTapped,
-        backgroundColor: Appcolors.lightColor,
       ),
     );
   }

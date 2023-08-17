@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:food_sales_recording_application/pages/add_menu_page.dart';
+import 'package:food_sales_recording_application/pages/menu_page.dart';
 
 import '../utils/app_colors.dart';
 import '../widgets/title_text.dart';
@@ -80,13 +82,13 @@ class _AddPageState extends State<AddPage> {
                           physics: NeverScrollableScrollPhysics(),
                           children: [
                             Container(
-                              child: Text("Home Body"),
+                              child: Text("Transaction Body"),
                             ),
                             Container(
-                              child: Text("Articles Body"),
+                              child: Text("Customer Body"),
                             ),
                             Container(
-                              child: Text("User Body"),
+                              child: AddMenuPage(),
                             ),
                           ]),
                     ),

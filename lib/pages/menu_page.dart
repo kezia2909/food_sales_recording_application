@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_sales_recording_application/widgets/detail_text.dart';
-
 import '../utils/app_colors.dart';
+import '../widgets/currency_input_formatter.dart';
 import '../widgets/title_text.dart';
 
 class MenuPage extends StatefulWidget {
@@ -12,6 +12,11 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  // final CurrencyTextInputFormatter _formatter =
+  //     CurrencyTextInputFormatter(enableNegative: false, decimalDigits: 0);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +33,70 @@ class _MenuPageState extends State<MenuPage> {
               isBold: true,
             ),
           ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Column(children: [
+              TextField(
+                autofocus: true,
+                controller: _nameController,
+                decoration: new InputDecoration(
+                  hintText: 'yummy noodle',
+                  labelText: "Food Name",
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  border: new OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(8),
+                    ),
+                    borderSide: new BorderSide(
+                      color: Colors.black,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextField(
+                  autofocus: true,
+                  controller: _priceController,
+                  decoration: new InputDecoration(
+                    hintText: '0',
+                    labelText: "Food Price",
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                    border: new OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(8),
+                      ),
+                      borderSide: new BorderSide(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                    ),
+                  ),
+                  inputFormatters: [CurrencyInputFormatter()],
+                  keyboardType: TextInputType.numberWithOptions(
+                      signed: false, decimal: false)),
+              SizedBox(
+                height: 10,
+              ),
+              GestureDetector(
+                onTap: () => (),
+                child: Container(
+                  width: double.maxFinite,
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: Appcolors.darkColor,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: TitleText(text: "Add Menu"),
+                ),
+              ),
+            ]),
+          ),
+          Divider(),
           Expanded(
             child: Container(
               color: Colors.white,
