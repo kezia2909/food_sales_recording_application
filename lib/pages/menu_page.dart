@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:food_sales_recording_application/widgets/detail_text.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import '../models/menu_model.dart';
 import '../utils/app_colors.dart';
 import '../widgets/currency_input_formatter.dart';
 import '../widgets/title_text.dart';
+import 'package:food_sales_recording_application/controllers/menu_controller.dart'
+    as foodMenuController;
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -14,8 +19,42 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+  final formatCurrency = NumberFormat.decimalPattern();
   // final CurrencyTextInputFormatter _formatter =
   //     CurrencyTextInputFormatter(enableNegative: false, decimalDigits: 0);
+
+  void _addMenu() {
+    String name = _nameController.text.trim();
+    print(_nameController.value);
+    print(_priceController.text.numericOnly());
+    int price = int.parse(_priceController.text.numericOnly());
+    print("price : ${price.toString}");
+
+    if (name.isEmpty) {
+      print("name is empty");
+    } else if (price == 0) {
+      print("price is empty");
+    } else {
+      MenuModel newMenu = MenuModel(name: name, price: price);
+
+      print("NEW MENU : ${newMenu.toString()}");
+
+      var addMenuController = Get.find<foodMenuController.MenuController>();
+      addMenuController.addMenu(newMenu).then(
+        (value) {
+          if (value.isSuccess) {
+            print("add menu success, id : ${value.message}");
+            _nameController.text = "";
+            _priceController.text = "";
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            currentFocus.unfocus();
+          } else {
+            print("failed to add menu : ${value.message}");
+          }
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +76,7 @@ class _MenuPageState extends State<MenuPage> {
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Column(children: [
               TextField(
-                autofocus: true,
+                // autofocus: true,
                 controller: _nameController,
                 decoration: new InputDecoration(
                   hintText: 'yummy noodle',
@@ -59,7 +98,7 @@ class _MenuPageState extends State<MenuPage> {
                 height: 10,
               ),
               TextField(
-                  autofocus: true,
+                  // autofocus: true,
                   controller: _priceController,
                   decoration: new InputDecoration(
                     hintText: '0',
@@ -83,7 +122,7 @@ class _MenuPageState extends State<MenuPage> {
                 height: 10,
               ),
               GestureDetector(
-                onTap: () => (),
+                onTap: _addMenu,
                 child: Container(
                   width: double.maxFinite,
                   padding: EdgeInsets.symmetric(vertical: 8),
@@ -100,67 +139,78 @@ class _MenuPageState extends State<MenuPage> {
           Expanded(
             child: Container(
               color: Colors.white,
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  DetailText(
-                                    text: "Beef Galantine",
-                                    size: 16,
-                                  ),
-                                  DetailText(
-                                    text: "180,000",
-                                    size: 16,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.1,
-                              height: MediaQuery.of(context).size.width * 0.1,
-                              child: FittedBox(
-                                child: Icon(
-                                  Icons.delete,
-                                  color: Appcolors.redColor,
+              child: GetBuilder<foodMenuController.MenuController>(
+                  builder: (menus) {
+                return ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: menus.menuList.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    DetailText(
+                                      text: MenuModel.fromJson(
+                                              menus.menuList[index])
+                                          .name
+                                          .toString(),
+                                      // text: menus.menuList[index].toString(),
+                                      size: 16,
+                                    ),
+                                    DetailText(
+                                      text: formatCurrency
+                                          .format(MenuModel.fromJson(
+                                                  menus.menuList[index])
+                                              .price)
+                                          .toString(),
+                                      size: 16,
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.1,
-                              height: MediaQuery.of(context).size.width * 0.1,
-                              child: FittedBox(
-                                child: Icon(
-                                  Icons.edit,
-                                  color: Appcolors.mediumColor,
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.1,
+                                height: MediaQuery.of(context).size.width * 0.1,
+                                child: FittedBox(
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Appcolors.redColor,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.1,
+                                height: MediaQuery.of(context).size.width * 0.1,
+                                child: FittedBox(
+                                  child: Icon(
+                                    Icons.edit,
+                                    color: Appcolors.mediumColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Divider()
-                    ],
-                  );
-                },
-              ),
+                        Divider()
+                      ],
+                    );
+                  },
+                );
+              }),
             ),
           )
         ],
