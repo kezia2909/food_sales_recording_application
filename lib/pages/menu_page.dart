@@ -23,6 +23,39 @@ class _MenuPageState extends State<MenuPage> {
   // final CurrencyTextInputFormatter _formatter =
   //     CurrencyTextInputFormatter(enableNegative: false, decimalDigits: 0);
 
+  void _addMenu() {
+    String name = _nameController.text.trim();
+    print(_nameController.value);
+    print(_priceController.text.numericOnly());
+    int price = int.parse(_priceController.text.numericOnly());
+    print("price : ${price.toString}");
+
+    if (name.isEmpty) {
+      print("name is empty");
+    } else if (price == 0) {
+      print("price is empty");
+    } else {
+      MenuModel newMenu = MenuModel(name: name, price: price);
+
+      print("NEW MENU : ${newMenu.toString()}");
+
+      var addMenuController = Get.find<foodMenuController.MenuController>();
+      addMenuController.addMenu(newMenu).then(
+        (value) {
+          if (value.isSuccess) {
+            print("add menu success, id : ${value.message}");
+            _nameController.text = "";
+            _priceController.text = "";
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            currentFocus.unfocus();
+          } else {
+            print("failed to add menu : ${value.message}");
+          }
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +76,7 @@ class _MenuPageState extends State<MenuPage> {
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Column(children: [
               TextField(
-                autofocus: true,
+                // autofocus: true,
                 controller: _nameController,
                 decoration: new InputDecoration(
                   hintText: 'yummy noodle',
@@ -65,7 +98,7 @@ class _MenuPageState extends State<MenuPage> {
                 height: 10,
               ),
               TextField(
-                  autofocus: true,
+                  // autofocus: true,
                   controller: _priceController,
                   decoration: new InputDecoration(
                     hintText: '0',
@@ -89,7 +122,7 @@ class _MenuPageState extends State<MenuPage> {
                 height: 10,
               ),
               GestureDetector(
-                onTap: () => (),
+                onTap: _addMenu,
                 child: Container(
                   width: double.maxFinite,
                   padding: EdgeInsets.symmetric(vertical: 8),
