@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_sales_recording_application/widgets/detail_text.dart';
+import 'package:get/get.dart';
 
+import '../controllers/customer_controller.dart';
+import '../models/customer_model.dart';
 import '../utils/app_colors.dart';
 import '../widgets/children_detail_item_history.dart';
 import '../widgets/currency_input_formatter.dart';
@@ -19,6 +22,31 @@ class _CustomerPageState extends State<CustomerPage> {
   final isExpandedList = List<bool>.generate(10, (int index) => false);
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+
+  void _addCustomer() {
+    String name = _nameController.text.trim();
+    String address = _addressController.text.trim();
+
+    if (name.isEmpty) {
+      print("name is empty");
+    } else if (address.isEmpty) {
+      print("address is empty");
+    } else {
+      CustomerModel newCustomer = CustomerModel(name: name, address: address);
+
+      var addCustomerController = Get.find<CustomerController>();
+      addCustomerController.addCustomer(newCustomer).then((value) {
+        if (value.isSuccess) {
+          _nameController.text = "";
+          _addressController.text = "";
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          currentFocus.unfocus();
+        } else {
+          print("failed to add customer : ${value.message}");
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,30 +89,31 @@ class _CustomerPageState extends State<CustomerPage> {
                 height: 10,
               ),
               TextField(
-                  controller: _addressController,
-                  decoration: new InputDecoration(
-                    hintText: 'Street No 10',
-                    labelText: "Customer Address",
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                    border: new OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(8),
-                      ),
-                      borderSide: new BorderSide(
-                        color: Colors.black,
-                        width: 1.0,
-                      ),
+                controller: _addressController,
+                decoration: new InputDecoration(
+                  hintText: 'Street No 10',
+                  labelText: "Customer Address",
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  border: new OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(8),
+                    ),
+                    borderSide: new BorderSide(
+                      color: Colors.black,
+                      width: 1.0,
                     ),
                   ),
-                  inputFormatters: [CurrencyInputFormatter()],
-                  keyboardType: TextInputType.numberWithOptions(
-                      signed: false, decimal: false)),
+                ),
+                // inputFormatters: [CurrencyInputFormatter()],
+                // keyboardType: TextInputType.numberWithOptions(
+                //     signed: false, decimal: false),
+              ),
               SizedBox(
                 height: 10,
               ),
               GestureDetector(
-                onTap: () => (),
+                onTap: _addCustomer,
                 child: Container(
                   width: double.maxFinite,
                   padding: EdgeInsets.symmetric(vertical: 8),
@@ -101,50 +130,57 @@ class _CustomerPageState extends State<CustomerPage> {
           Expanded(
             child: Container(
               color: Colors.white,
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    DetailText(
-                                      text: "Kezia Angeline",
-                                      isBold: true,
-                                      size: 16,
-                                    ),
-                                    DetailText(
-                                      text: "Melati IV/12",
-                                      color: Appcolors.mediumColor,
-                                    )
-                                  ]),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.1,
-                              height: MediaQuery.of(context).size.width * 0.1,
-                              child: FittedBox(
-                                child: Icon(
-                                  Icons.keyboard_arrow_right,
-                                  color: Colors.black,
+              child: GetBuilder<CustomerController>(builder: (customers) {
+                return ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: customers.customerList.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      DetailText(
+                                        text: CustomerModel.fromJson(
+                                                customers.customerList[index])
+                                            .name,
+                                        isBold: true,
+                                        size: 16,
+                                      ),
+                                      DetailText(
+                                        text: CustomerModel.fromJson(
+                                                customers.customerList[index])
+                                            .address,
+                                        color: Appcolors.mediumColor,
+                                      )
+                                    ]),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.1,
+                                height: MediaQuery.of(context).size.width * 0.1,
+                                child: FittedBox(
+                                  child: Icon(
+                                    Icons.keyboard_arrow_right,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Divider()
-                    ],
-                  );
-                },
-              ),
+                        Divider()
+                      ],
+                    );
+                  },
+                );
+              }),
             ),
           )
         ],
