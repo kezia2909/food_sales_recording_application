@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_sales_recording_application/pages/add_menu_page.dart';
+import 'package:food_sales_recording_application/pages/add_sale_page.dart';
 import 'package:food_sales_recording_application/pages/menu_page.dart';
 
 import '../utils/app_colors.dart';
@@ -25,7 +25,7 @@ class _AddPageState extends State<AddPage> {
             width: double.infinity,
             color: Appcolors.darkColor,
             child: TitleText(
-              text: "Add Data",
+              text: "Add Transaction",
               isBold: true,
             ),
           ),
@@ -50,7 +50,7 @@ class _AddPageState extends State<AddPage> {
           // ),
           Expanded(
             child: DefaultTabController(
-              length: 3,
+              length: 2,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -66,9 +66,8 @@ class _AddPageState extends State<AddPage> {
                             labelColor: Appcolors.darkColor,
                             indicatorColor: Appcolors.darkColor,
                             tabs: [
-                              Tab(text: "Transaction"),
-                              Tab(text: "Customer"),
-                              Tab(text: "Menu"),
+                              Tab(text: "Sale"),
+                              Tab(text: "Purchase"),
                             ]),
                       ),
                     ),
@@ -79,16 +78,13 @@ class _AddPageState extends State<AddPage> {
                           EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                       //Add this to give height
                       child: TabBarView(
-                          physics: NeverScrollableScrollPhysics(),
+                          // physics: NeverScrollableScrollPhysics(),
                           children: [
                             Container(
-                              child: Text("Transaction Body"),
+                              child: AddSalePage(),
                             ),
                             Container(
-                              child: Text("Customer Body"),
-                            ),
-                            Container(
-                              child: AddMenuPage(),
+                              child: Text("Material Purchase"),
                             ),
                           ]),
                     ),

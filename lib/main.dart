@@ -22,9 +22,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<foodMenuController.MenuController>(builder: (_) {
-      return GetBuilder<CustomerController>(builder: (_) {
-        return MaterialApp(
+    return GetBuilder<foodMenuController.MenuController>(builder: (context) {
+      return GetBuilder<CustomerController>(builder: (context) {
+        return GetMaterialApp(
           title: 'Flutter Demo',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
