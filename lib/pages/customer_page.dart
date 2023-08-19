@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_sales_recording_application/widgets/custom_snackbar.dart';
+import 'package:food_sales_recording_application/widgets/custom_text_field.dart';
 import 'package:food_sales_recording_application/widgets/detail_text.dart';
 import 'package:get/get.dart';
 
@@ -72,47 +73,18 @@ class _CustomerPageState extends State<CustomerPage> {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Column(children: [
-              TextField(
-                controller: _nameController,
-                decoration: new InputDecoration(
-                  hintText: 'John Doe',
-                  labelText: "Customer Name",
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                  border: new OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(8),
-                    ),
-                    borderSide: new BorderSide(
-                      color: Colors.black,
-                      width: 1.0,
-                    ),
-                  ),
-                ),
+              CustomTextField(
+                textEditingController: _nameController,
+                labelText: 'Customer Name',
+                hintText: 'John Doe',
               ),
               SizedBox(
                 height: 10,
               ),
-              TextField(
-                controller: _addressController,
-                decoration: new InputDecoration(
-                  hintText: 'Street No 10',
-                  labelText: "Customer Address",
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                  border: new OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(8),
-                    ),
-                    borderSide: new BorderSide(
-                      color: Colors.black,
-                      width: 1.0,
-                    ),
-                  ),
-                ),
-                // inputFormatters: [CurrencyInputFormatter()],
-                // keyboardType: TextInputType.numberWithOptions(
-                //     signed: false, decimal: false),
+              CustomTextField(
+                textEditingController: _addressController,
+                labelText: 'Customer Address',
+                hintText: 'Street No 10',
               ),
               SizedBox(
                 height: 10,
