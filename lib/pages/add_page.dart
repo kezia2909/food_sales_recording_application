@@ -50,7 +50,7 @@ class _AddPageState extends State<AddPage> {
           // ),
           Expanded(
             child: DefaultTabController(
-              length: 3,
+              length: 2,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -78,7 +78,7 @@ class _AddPageState extends State<AddPage> {
                           EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                       //Add this to give height
                       child: TabBarView(
-                          physics: NeverScrollableScrollPhysics(),
+                          // physics: NeverScrollableScrollPhysics(),
                           children: [
                             Container(
                               child: AddSalePage(),

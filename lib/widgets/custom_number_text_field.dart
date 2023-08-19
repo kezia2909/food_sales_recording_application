@@ -6,16 +6,19 @@ class CustomNumberTextField extends StatelessWidget {
   final TextEditingController textEditingController;
   final String labelText;
   final String hintText;
+  final bool readOnly;
 
   CustomNumberTextField(
       {super.key,
       required this.textEditingController,
       required this.labelText,
-      required this.hintText});
+      required this.hintText,
+      this.readOnly = false});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      readOnly: readOnly,
       controller: textEditingController,
       decoration: new InputDecoration(
         hintText: hintText,
