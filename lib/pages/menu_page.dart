@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_sales_recording_application/widgets/custom_snackbar.dart';
 import 'package:food_sales_recording_application/widgets/detail_text.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -27,14 +28,17 @@ class _MenuPageState extends State<MenuPage> {
     String name = _nameController.text.trim();
     print(_nameController.value);
     print(_priceController.text.numericOnly());
-    int price = int.parse(_priceController.text.numericOnly());
+    String price = _priceController.text;
     print("price : ${price.toString}");
 
     if (name.isEmpty) {
       print("name is empty");
-    } else if (price == 0) {
+      customSnackbar("Please enter food name");
+    } else if (price.isEmpty) {
       print("price is empty");
+      customSnackbar("Please enter food price");
     } else {
+      int price = int.parse(_priceController.text.numericOnly());
       MenuModel newMenu = MenuModel(name: name, price: price);
 
       print("NEW MENU : ${newMenu.toString()}");
@@ -48,6 +52,8 @@ class _MenuPageState extends State<MenuPage> {
             _priceController.text = "";
             FocusScopeNode currentFocus = FocusScope.of(context);
             currentFocus.unfocus();
+            customSnackbar("Successfully added food",
+                isError: false, title: "Success");
           } else {
             print("failed to add menu : ${value.message}");
           }
