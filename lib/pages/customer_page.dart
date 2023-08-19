@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_sales_recording_application/widgets/custom_snackbar.dart';
 import 'package:food_sales_recording_application/widgets/detail_text.dart';
 import 'package:get/get.dart';
 
@@ -29,8 +30,10 @@ class _CustomerPageState extends State<CustomerPage> {
 
     if (name.isEmpty) {
       print("name is empty");
+      customSnackbar("Please enter customer name");
     } else if (address.isEmpty) {
       print("address is empty");
+      customSnackbar("Please enter customer address");
     } else {
       CustomerModel newCustomer = CustomerModel(name: name, address: address);
 
@@ -41,6 +44,8 @@ class _CustomerPageState extends State<CustomerPage> {
           _addressController.text = "";
           FocusScopeNode currentFocus = FocusScope.of(context);
           currentFocus.unfocus();
+          customSnackbar("Successfully added customer",
+              isError: false, title: "Success");
         } else {
           print("failed to add customer : ${value.message}");
         }
@@ -113,7 +118,9 @@ class _CustomerPageState extends State<CustomerPage> {
                 height: 10,
               ),
               GestureDetector(
-                onTap: _addCustomer,
+                onTap: () {
+                  _addCustomer();
+                },
                 child: Container(
                   width: double.maxFinite,
                   padding: EdgeInsets.symmetric(vertical: 8),
