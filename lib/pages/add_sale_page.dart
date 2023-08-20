@@ -1,11 +1,16 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:food_sales_recording_application/models/transaction_item_model.dart';
+import 'package:food_sales_recording_application/sql_controllers/sale_helper.dart';
+import 'package:food_sales_recording_application/sql_controllers/sale_items_helper.dart';
 import 'package:food_sales_recording_application/utils/app_colors.dart';
 import 'package:food_sales_recording_application/widgets/custom_number_text_field.dart';
 import 'package:food_sales_recording_application/widgets/custom_text_field.dart';
 import 'package:intl/intl.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
+
+import '../sql_controllers/sale_items_sql_controller.dart';
+import '../sql_controllers/sales_sql_controller.dart';
 
 class AddSalePage extends StatefulWidget {
   const AddSalePage({super.key});
@@ -20,6 +25,7 @@ class _AddSalePageState extends State<AddSalePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _deliveryFeeController = TextEditingController();
+  int _tempDeliveryFee = 0;
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _pcsController = TextEditingController();
   final SingleValueDropDownController _itemController =
@@ -52,6 +58,99 @@ class _AddSalePageState extends State<AddSalePage> {
   String? selectedValue;
   List<TransactionItemModel> _items = [];
   int totalSale = 0;
+  List<Map<String, dynamic>> _data = [];
+  List<Map<String, dynamic>> _dataItem = [];
+  int sales_id = -1;
+
+  void _refreshDataOld() async {
+    // final data = await SaleHelper.getSales();
+    // final dataItem = await SaleItemsHelper.getSaleItems();
+
+    // setState(() {
+    //   _data = data;
+    //   _dataItem = dataItem;
+    // });
+    // print("DATA FROM SQL : " + _data.length.toString());
+    // print(_data.toString());
+    // print("DATA ITEM : ");
+    // print(_dataItem.toString());
+
+    // print("ID : $sales_id");
+    // _items.forEach(
+    //   (element) {
+    //     print("element new : ${element.toString()}");
+    //     print(element.name);
+    //     _addSaleItem(sales_id, element);
+    //   },
+    // );
+  }
+
+  void _refreshData() async {
+    // final data = await SaleHelper.getSales();
+    // final dataItem = await SaleItemsHelper.getSaleItems();
+
+    final data = await SaleSQLController.getSales();
+    final dataItem = await SaleItemSQLController.getSaleItems(null);
+    setState(() {
+      _data = data;
+      _dataItem = dataItem;
+    });
+
+    print("DATA SQL HOME: " + _data.length.toString());
+    print(_data.toString());
+    print("DATA ITEM SQL HOME: " + _dataItem.length.toString());
+    print(_dataItem.toString());
+  }
+
+  Future<void> _addSaleOld() async {
+    // sales_id = await SaleHelper.createSale(
+    //     1,
+    //     _nameController.text,
+    //     _addressController.text,
+    //     int.parse(_deliveryFeeController.text.replaceAll(',', '')),
+    //     totalSale);
+    // setState(() {});
+    // _refreshData();
+    // print("items : ${_items.toString()}");
+
+    // print("adding data success");
+  }
+
+  Future<void> _addSale() async {
+    sales_id = await SaleSQLController.createSale(
+        1,
+        _nameController.text,
+        _addressController.text,
+        int.parse(_deliveryFeeController.text.replaceAll(',', '')),
+        totalSale);
+    setState(() {});
+    _refreshData();
+    print("items : ${_items.toString()}");
+
+    _items.forEach(
+      (element) {
+        _addSaleItem(sales_id, element);
+      },
+    );
+
+    print("adding data success");
+  }
+
+  Future<void> _addSaleItem(int sales_id, TransactionItemModel item) async {
+    await SaleItemSQLController.createSaleItem(
+        sales_id, item.pcs, item.name, item.price, item.pcs * item.price);
+    _refreshData();
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("init state add sale page");
+    _refreshData();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +300,7 @@ class _AddSalePageState extends State<AddSalePage> {
             Row(
               children: [
                 Expanded(flex: 1, child: Text("pcs")),
-                Expanded(flex: 3, child: Text("menu")),
+                Expanded(flex: 3, child: Text("name")),
                 Expanded(flex: 2, child: Text("price")),
                 Expanded(flex: 2, child: Text("total")),
               ],
@@ -238,9 +337,19 @@ class _AddSalePageState extends State<AddSalePage> {
             Divider(),
             Container(
                 margin: EdgeInsets.only(top: 10),
-                child: Text(
-                  "TOTAL : ${formatCurrency.format(totalSale)}",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "TOTAL : ${formatCurrency.format(totalSale)}",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    ElevatedButton(
+                      child: Text("Submit"),
+                      onPressed: () => (_addSale()),
+                    )
+                  ],
                 )),
           ],
         ),

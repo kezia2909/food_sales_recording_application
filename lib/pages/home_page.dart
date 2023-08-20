@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:food_sales_recording_application/models/transaction_item_model.dart';
+import 'package:food_sales_recording_application/sql_controllers/sale_helper.dart';
+import 'package:food_sales_recording_application/sql_controllers/sale_items_helper.dart';
+import 'package:food_sales_recording_application/sql_controllers/sale_items_sql_controller.dart';
+import 'package:food_sales_recording_application/sql_controllers/sales_sql_controller.dart';
 import 'package:food_sales_recording_application/utils/app_colors.dart';
 import 'package:food_sales_recording_application/widgets/children_detail_item_history.dart';
 import 'package:food_sales_recording_application/widgets/date_row.dart';
@@ -20,6 +25,54 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // var isExpanded = false;
   final isExpandedList = List<bool>.generate(10, (int index) => false);
+  List<Map<String, dynamic>> _data = [];
+  List<Map<String, dynamic>> _dataItemExpanse = [];
+  List<Map<String, dynamic>> _dataItem = [];
+
+  void _refreshData() async {
+    // final data = await SaleHelper.getSales();
+    // final dataItem = await SaleItemsHelper.getSaleItems();
+
+    final data = await SaleSQLController.getSales();
+    final dataItem = await SaleItemSQLController.getSaleItems(null);
+    setState(() {
+      _data = data;
+      _dataItem = dataItem;
+    });
+
+    print("DATA SQL HOME: " + _data.length.toString());
+    print(_data.toString());
+    print("DATA ITEM SQL HOME: " + _dataItem.length.toString());
+    print(_dataItem.toString());
+  }
+
+  Future<void> _getDataItemExpanse(int sales_id) async {
+    final dataItemExpanse = await SaleItemSQLController.getSaleItems(sales_id);
+
+    setState(() {
+      _dataItemExpanse = dataItemExpanse;
+    });
+  }
+
+  Future<List<TransactionItemModel>> _getItemTransaction(int id) async {
+    final List<Map<String, dynamic>> items =
+        await SaleItemSQLController.getSaleItems(id);
+    print("GET ITEM EXPANSE");
+    print(items.toString());
+    return items
+        .map((e) => TransactionItemModel(
+              name: e["name"],
+              price: e["price"],
+              pcs: e["pcs"],
+            ))
+        .toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,18 +100,6 @@ class _HomePageState extends State<HomePage> {
                         backgroundColor: Appcolors.lightColor,
                         size: MediaQuery.of(context).size.width * 0.16,
                       ),
-                      // Container(
-                      //   width: MediaQuery.of(context).size.width * 0.16,
-                      //   height: MediaQuery.of(context).size.width * 0.16,
-                      //   decoration: BoxDecoration(
-                      //       color: Colors.orange[100],
-                      //       borderRadius: BorderRadius.circular(8.0)),
-                      //   child: FittedBox(
-                      //     child: Icon(
-                      //       Icons.assignment_outlined,
-                      //     ),
-                      //   ),
-                      // ),
                       SizedBox(
                         width: 20,
                       ),
@@ -130,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
                 child: ListView.builder(
                   padding: EdgeInsets.zero,
-                  itemCount: 10,
+                  itemCount: _data.length,
                   itemBuilder: (context, index) {
                     return Container(
                       color: Colors.white,
@@ -144,25 +185,48 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             children: [
                               ExpansionTile(
-                                onExpansionChanged: (value) {
-                                  setState(() => isExpandedList[index] = value);
+                                onExpansionChanged: (value) async {
+                                  setState(() {
+                                    isExpandedList[index] = value;
+                                    _getDataItemExpanse(_data[index]['id']);
+                                  });
                                 },
                                 trailing: TrailingItemHistory(
                                   isExpanded: isExpandedList[index],
                                 ),
                                 title: TitleItemHistory(
                                   icon: Icons.warning_amber_rounded,
-                                  title: 'Kezia Angeline',
+                                  title: _data[index]['customer_name'],
                                   subTitle: 'UNPAID',
-                                  total: 300000,
+                                  total: _data[index]['total'],
                                 ),
                                 children: [
-                                  for (int i = 0; i < 5; i++)
-                                    ChildrenDetailItemHistory(
-                                      pcs: 1,
-                                      name: "Beef Galantine",
-                                      total: 120000,
-                                    )
+                                  FutureBuilder<List<TransactionItemModel>>(
+                                    future:
+                                        _getItemTransaction(_data[index]['id']),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return CircularProgressIndicator(); // Show loading indicator while fetching data
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else if (!snapshot.hasData ||
+                                          snapshot.data!.isEmpty) {
+                                        return Text('No items available.');
+                                      } else {
+                                        return Column(
+                                            children: snapshot.data!.map(
+                                          (item) {
+                                            return ChildrenDetailItemHistory(
+                                              pcs: item.pcs,
+                                              name: item.name,
+                                              total: item.price,
+                                            );
+                                          },
+                                        ).toList());
+                                      }
+                                    },
+                                  )
                                 ],
                               ),
                               Divider()
