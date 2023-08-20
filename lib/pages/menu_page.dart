@@ -68,8 +68,8 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   void _updateMenu(String id) {
-    String name = _nameController.text.trim();
-    String price = _priceController.text;
+    String name = _editNameController.text.trim();
+    String price = _editPriceController.text;
 
     if (name.isEmpty) {
       print("name is empty");
@@ -78,7 +78,7 @@ class _MenuPageState extends State<MenuPage> {
       print("price is empty");
       customSnackbar("Please enter food price");
     } else {
-      int price = int.parse(_priceController.text.numericOnly());
+      int price = int.parse(_editPriceController.text.numericOnly());
       MenuModel updateMenu = MenuModel(name: name, price: price);
 
       print("NEW MENU : ${updateMenu.toString()}");
@@ -87,8 +87,8 @@ class _MenuPageState extends State<MenuPage> {
       addMenuController.updateMenu(id, updateMenu).then(
         (value) {
           if (value.isSuccess) {
-            _nameController.text = "";
-            _priceController.text = "";
+            _editNameController.text = "";
+            _editPriceController.text = "";
             FocusScopeNode currentFocus = FocusScope.of(context);
             currentFocus.unfocus();
             customSnackbar("Successfully update menu",
@@ -118,7 +118,7 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-  void _showEditDialog() {
+  void _showEditDialog(String id) {
     Get.defaultDialog(
       title: "Edit Menu",
       cancel: IconButton(
@@ -149,6 +149,7 @@ class _MenuPageState extends State<MenuPage> {
           ),
           GestureDetector(
             onTap: () {
+              _updateMenu(id);
               Get.back();
             },
             child: Container(
@@ -280,10 +281,6 @@ class _MenuPageState extends State<MenuPage> {
                                 width: 10,
                               ),
                               GestureDetector(
-                                // onTap: () => _updateMenu(
-                                //     MenuModel.fromJson(menus.menuList[index])
-                                //         .id!),
-
                                 onTap: () {
                                   _editNameController.text =
                                       MenuModel.fromJson(menus.menuList[index])
@@ -295,9 +292,10 @@ class _MenuPageState extends State<MenuPage> {
                                           .price)
                                       .toString();
 
-                                  _showEditDialog();
+                                  _showEditDialog(
+                                      MenuModel.fromJson(menus.menuList[index])
+                                          .id!);
                                 },
-
                                 child: Container(
                                   width:
                                       MediaQuery.of(context).size.width * 0.1,

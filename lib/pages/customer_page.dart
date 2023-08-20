@@ -73,8 +73,8 @@ class _CustomerPageState extends State<CustomerPage> {
       var addCustomerController = Get.find<CustomerController>();
       addCustomerController.updateCustomer(id, updateCustomer).then((value) {
         if (value.isSuccess) {
-          _nameController.text = "";
-          _addressController.text = "";
+          _editNameController.text = "";
+          _editAddressController.text = "";
           FocusScopeNode currentFocus = FocusScope.of(context);
           currentFocus.unfocus();
           customSnackbar("Successfully update customer",
