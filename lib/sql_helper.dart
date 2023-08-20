@@ -46,7 +46,7 @@ class SQLHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         sales_id INTEGER, 
         pcs INTEGER,
-        menu TEXT,
+        name TEXT,
         price INTEGER,
         total INTEGER,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

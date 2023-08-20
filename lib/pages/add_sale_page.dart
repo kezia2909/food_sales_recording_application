@@ -90,7 +90,7 @@ class _AddSalePageState extends State<AddSalePage> {
     // final dataItem = await SaleItemsHelper.getSaleItems();
 
     final data = await SaleSQLController.getSales();
-    final dataItem = await SaleItemSQLController.getSaleItems();
+    final dataItem = await SaleItemSQLController.getSaleItems(null);
     setState(() {
       _data = data;
       _dataItem = dataItem;
@@ -300,7 +300,7 @@ class _AddSalePageState extends State<AddSalePage> {
             Row(
               children: [
                 Expanded(flex: 1, child: Text("pcs")),
-                Expanded(flex: 3, child: Text("menu")),
+                Expanded(flex: 3, child: Text("name")),
                 Expanded(flex: 2, child: Text("price")),
                 Expanded(flex: 2, child: Text("total")),
               ],

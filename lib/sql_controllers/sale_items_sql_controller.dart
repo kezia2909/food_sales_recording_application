@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 class SaleItemSQLController {
   static Future<int> createSaleItem(
-      int sales_id, int pcs, String menu, int price, int total) async {
+      int sales_id, int pcs, String name, int price, int total) async {
     print("create sale item controller");
     final db = await SQLHelper.database;
     print("db : ${db.toString()}");
@@ -11,7 +11,7 @@ class SaleItemSQLController {
     final data = {
       'sales_id': sales_id,
       'pcs': pcs,
-      'menu': menu,
+      'name': name,
       'price': price,
       'total': total
     };
@@ -32,13 +32,18 @@ class SaleItemSQLController {
     return id;
   }
 
-  static Future<List<Map<String, dynamic>>> getSaleItems() async {
+  static Future<List<Map<String, dynamic>>> getSaleItems(int? sales_id) async {
     print("get sale items controller");
     final db = await SQLHelper.database;
     print("db : ${db.toString()}");
 
     print("OTW GET");
     print("${db.query('sale_items', orderBy: 'id')}");
+
+    if (sales_id != null) {
+      return db.query('sale_items',
+          orderBy: 'id', where: 'sales_id=?', whereArgs: [sales_id]);
+    }
     return db.query('sale_items', orderBy: 'id');
 
     // await SQLHelper.database.then(
