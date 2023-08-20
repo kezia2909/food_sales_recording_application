@@ -24,6 +24,14 @@ class _AddSalePageState extends State<AddSalePage> {
   final TextEditingController _pcsController = TextEditingController();
   final SingleValueDropDownController _itemController =
       SingleValueDropDownController();
+  List<String> listCustomer = [
+    "Kezia",
+    "Angeline",
+    "customer3",
+    "customer4",
+    "customer5",
+    "customer6",
+  ];
   List<String> items = [
     "Beef Galantine",
     "Sate Babi Rempah",
@@ -50,6 +58,7 @@ class _AddSalePageState extends State<AddSalePage> {
   FocusNode searchFocusNode = FocusNode();
   FocusNode textFieldFocusNode = FocusNode();
   String? selectedValue;
+  String? selectedCustomer;
   List<TransactionItemModel> _items = [];
   int totalSale = 0;
 
@@ -62,10 +71,46 @@ class _AddSalePageState extends State<AddSalePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomTextField(
-              textEditingController: _nameController,
-              labelText: 'Customer name',
-              hintText: 'John Doe',
+            // CustomTextField(
+            //   textEditingController: _nameController,
+            //   labelText: 'Customer name',
+            //   hintText: 'John Doe',
+            // ),
+            InputDecorator(
+              decoration: InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                border: new OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(
+                    const Radius.circular(8),
+                  ),
+                  borderSide: new BorderSide(
+                    color: Colors.black,
+                    width: 1.0,
+                  ),
+                ),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: selectedCustomer,
+                  // isDense: true,
+                  hint: Text("Customer Name"),
+                  isExpanded: true,
+                  onChanged: (newValue) {
+                    _addressController.text = "Surabaya 100";
+
+                    setState(() {
+                      selectedCustomer = newValue;
+                    });
+                  },
+                  items: listCustomer.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
             SizedBox(
               height: 10,

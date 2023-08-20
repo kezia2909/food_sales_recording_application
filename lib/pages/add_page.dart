@@ -29,70 +29,52 @@ class _AddPageState extends State<AddPage> {
               isBold: true,
             ),
           ),
-          // Container(
-          //   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-          //   alignment: Alignment.center,
-          //   width: double.infinity,
-          //   color: Appcolors.mediumColor,
-          //   child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //       children: [
-          //         TitleText(
-          //           text: "Transaction",
-          //         ),
-          //         TitleText(
-          //           text: "Customer",
-          //         ),
-          //         TitleText(
-          //           text: "Menu",
-          //         ),
-          //       ]),
-          // ),
           Expanded(
-            child: DefaultTabController(
-              length: 2,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Container(
-                    child: Material(
-                      color: Appcolors.lightColor,
-                      child: Theme(
-                        data: ThemeData().copyWith(
-                          splashColor: Appcolors.mediumColor,
-                        ),
-                        child: TabBar(
-                            unselectedLabelColor: Appcolors.darkGreyColor,
-                            labelColor: Appcolors.darkColor,
-                            indicatorColor: Appcolors.darkColor,
-                            tabs: [
-                              Tab(text: "Sale"),
-                              Tab(text: "Purchase"),
-                            ]),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                      //Add this to give height
-                      child: TabBarView(
-                          // physics: NeverScrollableScrollPhysics(),
-                          children: [
-                            Container(
-                              child: AddSalePage(),
-                            ),
-                            Container(
-                              child: Text("Material Purchase"),
-                            ),
-                          ]),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
+              child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  child: AddSalePage())),
+          // Expanded(
+          //   child: DefaultTabController(
+          //     length: 2,
+          //     child: Column(
+          //       mainAxisSize: MainAxisSize.min,
+          //       children: <Widget>[
+          //         Container(
+          //           child: Material(
+          //             color: Appcolors.lightColor,
+          //             child: Theme(
+          //               data: ThemeData().copyWith(
+          //                 splashColor: Appcolors.mediumColor,
+          //               ),
+          //               child: TabBar(
+          //                   unselectedLabelColor: Appcolors.darkGreyColor,
+          //                   labelColor: Appcolors.darkColor,
+          //                   indicatorColor: Appcolors.darkColor,
+          //                   tabs: [
+          //                     Tab(text: "Sale"),
+          //                     Tab(text: "Purchase"),
+          //                   ]),
+          //             ),
+          //           ),
+          //         ),
+          //         Expanded(
+          //           child: Container(
+          //             margin:
+          //                 EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          //             child: TabBarView(children: [
+          //               Container(
+          //                 child: AddSalePage(),
+          //               ),
+          //               Container(
+          //                 child: Text("Material Purchase"),
+          //               ),
+          //             ]),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // )
         ],
       )),
     );
