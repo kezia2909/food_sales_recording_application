@@ -141,13 +141,29 @@ class _CustomerPageState extends State<CustomerPage> {
                                       )
                                     ]),
                               ),
+                              SizedBox(
+                                width: 10,
+                              ),
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.1,
                                 height: MediaQuery.of(context).size.width * 0.1,
                                 child: FittedBox(
                                   child: Icon(
-                                    Icons.keyboard_arrow_right,
-                                    color: Colors.black,
+                                    Icons.delete,
+                                    color: Appcolors.redColor,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.1,
+                                height: MediaQuery.of(context).size.width * 0.1,
+                                child: FittedBox(
+                                  child: Icon(
+                                    Icons.edit,
+                                    color: Appcolors.mediumColor,
                                   ),
                                 ),
                               ),
