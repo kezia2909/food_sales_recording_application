@@ -22,6 +22,8 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _editNameController = TextEditingController();
+  final TextEditingController _editPriceController = TextEditingController();
   final formatCurrency = NumberFormat.decimalPattern();
   // final CurrencyTextInputFormatter _formatter =
   //     CurrencyTextInputFormatter(enableNegative: false, decimalDigits: 0);
@@ -62,6 +64,54 @@ class _MenuPageState extends State<MenuPage> {
         },
       );
     }
+  }
+
+  void _showEditDialog() {
+    Get.defaultDialog(
+      title: "Edit Menu",
+      cancel: IconButton(
+        icon: Icon(Icons.cancel),
+        onPressed: () {
+          Get.back();
+        },
+      ),
+      backgroundColor: Appcolors.lightColor,
+      content: Column(
+        children: [
+          TextField(
+            controller: _editNameController,
+            decoration: InputDecoration(labelText: 'Enter name'),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          TextField(
+            controller: _editPriceController,
+            decoration: InputDecoration(labelText: 'Enter price'),
+            inputFormatters: [CurrencyInputFormatter()],
+            keyboardType:
+                TextInputType.numberWithOptions(signed: false, decimal: false),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          GestureDetector(
+            onTap: () {
+              Get.back();
+            },
+            child: Container(
+              width: double.maxFinite,
+              padding: EdgeInsets.symmetric(vertical: 8),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Appcolors.darkColor,
+                  borderRadius: BorderRadius.circular(8)),
+              child: TitleText(text: "Update"),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -170,13 +220,30 @@ class _MenuPageState extends State<MenuPage> {
                               SizedBox(
                                 width: 10,
                               ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.1,
-                                height: MediaQuery.of(context).size.width * 0.1,
-                                child: FittedBox(
-                                  child: Icon(
-                                    Icons.edit,
-                                    color: Appcolors.mediumColor,
+                              GestureDetector(
+                                onTap: () {
+                                  _editNameController.text =
+                                      MenuModel.fromJson(menus.menuList[index])
+                                          .name
+                                          .toString();
+                                  _editPriceController.text = formatCurrency
+                                      .format(MenuModel.fromJson(
+                                              menus.menuList[index])
+                                          .price)
+                                      .toString();
+
+                                  _showEditDialog();
+                                },
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  child: FittedBox(
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: Appcolors.mediumColor,
+                                    ),
                                   ),
                                 ),
                               ),
