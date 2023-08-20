@@ -15,4 +15,14 @@ class MenuRepo extends GetxService {
     print("menu repo - send data to json : ${newMenu.toJson().toString()}");
     return await apiClient.postData("/api/v1/menus", newMenu.toJson());
   }
+
+  Future<Response> updateMenu(String id, MenuModel updateMenu) async {
+    print("menu repo - send data : ${updateMenu.name}");
+    print("menu repo - send data to json : ${updateMenu.toJson().toString()}");
+    return await apiClient.updateData("/api/v1/menus/$id", updateMenu.toJson());
+  }
+
+  Future<Response> deleteMenu(String id) async {
+    return await apiClient.deleteData("/api/v1/menus/$id");
+  }
 }

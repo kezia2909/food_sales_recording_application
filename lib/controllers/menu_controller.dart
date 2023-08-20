@@ -52,4 +52,35 @@ class MenuController extends GetxController {
 
     return responseModel;
   }
+
+  Future<ResponseModel> updateMenu(String id, MenuModel updateMenu) async {
+    print("send : ${updateMenu.name}");
+    Response response = await menuRepo.updateMenu(id, updateMenu);
+    late ResponseModel responseModel;
+
+    if (response.statusCode == 200) {
+      responseModel = ResponseModel(
+          true, "${response.body["id"]} = ${response.body["name"]}");
+    } else {
+      responseModel =
+          ResponseModel(false, "${response.statusCode} - ${response.body}");
+    }
+
+    await Get.find<foodMenuController.MenuController>().getMenuList();
+
+    update();
+
+    return responseModel;
+  }
+
+  Future<bool> deleteMenu(String id) async {
+    Response response = await menuRepo.deleteMenu(id);
+    await Get.find<foodMenuController.MenuController>().getMenuList();
+    update();
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
