@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:food_sales_recording_application/sql/sale_helper.dart';
+import 'package:food_sales_recording_application/sql_controllers/sale_helper.dart';
+import 'package:food_sales_recording_application/sql_controllers/sale_items_helper.dart';
+import 'package:food_sales_recording_application/sql_controllers/sale_items_sql_controller.dart';
+import 'package:food_sales_recording_application/sql_controllers/sales_sql_controller.dart';
 import 'package:food_sales_recording_application/utils/app_colors.dart';
 import 'package:food_sales_recording_application/widgets/children_detail_item_history.dart';
 import 'package:food_sales_recording_application/widgets/date_row.dart';
@@ -22,16 +25,23 @@ class _HomePageState extends State<HomePage> {
   // var isExpanded = false;
   final isExpandedList = List<bool>.generate(10, (int index) => false);
   List<Map<String, dynamic>> _data = [];
+  List<Map<String, dynamic>> _dataItem = [];
 
   void _refreshData() async {
-    final data = await SaleHelper.getSales();
+    // final data = await SaleHelper.getSales();
+    // final dataItem = await SaleItemsHelper.getSaleItems();
 
+    final data = await SaleSQLController.getSales();
+    final dataItem = await SaleItemSQLController.getSaleItems();
     setState(() {
       _data = data;
+      _dataItem = dataItem;
     });
 
     print("DATA SQL HOME: " + _data.length.toString());
     print(_data.toString());
+    print("DATA ITEM SQL HOME: " + _dataItem.length.toString());
+    print(_dataItem.toString());
   }
 
   @override
