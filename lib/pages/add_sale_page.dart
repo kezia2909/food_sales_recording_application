@@ -1,6 +1,7 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:food_sales_recording_application/models/transaction_item_model.dart';
+import 'package:food_sales_recording_application/sql/sale_helper.dart';
 import 'package:food_sales_recording_application/utils/app_colors.dart';
 import 'package:food_sales_recording_application/widgets/custom_number_text_field.dart';
 import 'package:food_sales_recording_application/widgets/custom_text_field.dart';
@@ -20,6 +21,7 @@ class _AddSalePageState extends State<AddSalePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _deliveryFeeController = TextEditingController();
+  int _tempDeliveryFee = 0;
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _pcsController = TextEditingController();
   final SingleValueDropDownController _itemController =
@@ -52,6 +54,35 @@ class _AddSalePageState extends State<AddSalePage> {
   String? selectedValue;
   List<TransactionItemModel> _items = [];
   int totalSale = 0;
+  List<Map<String, dynamic>> _data = [];
+
+  void _refreshData() async {
+    final data = await SaleHelper.getSales();
+
+    setState(() {
+      _data = data;
+    });
+    print("DATA FROM SQL : " + _data.length.toString());
+    print(_data.toString());
+  }
+
+  Future<void> _addSale() async {
+    await SaleHelper.createSale(
+        1,
+        _nameController.text,
+        _addressController.text,
+        int.parse(_deliveryFeeController.text.replaceAll(',', '')),
+        totalSale);
+    _refreshData();
+    print("adding data success");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("init state add sale page");
+    _refreshData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -238,9 +269,19 @@ class _AddSalePageState extends State<AddSalePage> {
             Divider(),
             Container(
                 margin: EdgeInsets.only(top: 10),
-                child: Text(
-                  "TOTAL : ${formatCurrency.format(totalSale)}",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "TOTAL : ${formatCurrency.format(totalSale)}",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    ElevatedButton(
+                      child: Text("Submit"),
+                      onPressed: () => (_addSale()),
+                    )
+                  ],
                 )),
           ],
         ),

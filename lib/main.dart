@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_sales_recording_application/pages/home_page.dart';
+import 'package:food_sales_recording_application/sql/sale_helper.dart';
 import 'package:food_sales_recording_application/widgets/bottom_nav_bar.dart';
 import 'package:food_sales_recording_application/controllers/menu_controller.dart'
     as foodMenuController;

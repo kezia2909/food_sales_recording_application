@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_sales_recording_application/sql/sale_helper.dart';
 import 'package:food_sales_recording_application/utils/app_colors.dart';
 import 'package:food_sales_recording_application/widgets/children_detail_item_history.dart';
 import 'package:food_sales_recording_application/widgets/date_row.dart';
@@ -20,6 +21,24 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // var isExpanded = false;
   final isExpandedList = List<bool>.generate(10, (int index) => false);
+  List<Map<String, dynamic>> _data = [];
+
+  void _refreshData() async {
+    final data = await SaleHelper.getSales();
+
+    setState(() {
+      _data = data;
+    });
+
+    print("DATA SQL HOME: " + _data.length.toString());
+    print(_data.toString());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshData();
+  }
 
   @override
   Widget build(BuildContext context) {
