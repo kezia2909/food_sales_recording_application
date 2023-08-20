@@ -16,4 +16,14 @@ class CustomerRepo extends GetxService {
     // print("Customer repo - send data to json : ${newCustomer.toJson().toString()}");
     return await apiClient.postData("/api/v1/customers", newCustomer.toJson());
   }
+
+  Future<Response> updateCustomer(
+      String id, CustomerModel updateCustomer) async {
+    return await apiClient.updateData(
+        "/api/v1/customers/$id", updateCustomer.toJson());
+  }
+
+  Future<Response> deleteCustomer(String id) async {
+    return await apiClient.deleteData("/api/v1/customers/$id");
+  }
 }

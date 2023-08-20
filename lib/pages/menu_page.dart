@@ -56,9 +56,10 @@ class _MenuPageState extends State<MenuPage> {
             _priceController.text = "";
             FocusScopeNode currentFocus = FocusScope.of(context);
             currentFocus.unfocus();
-            customSnackbar("Successfully added food",
+            customSnackbar("Successfully added menu",
                 isError: false, title: "Success");
           } else {
+            customSnackbar("Failed to add menu");
             print("failed to add menu : ${value.message}");
           }
         },
@@ -66,6 +67,58 @@ class _MenuPageState extends State<MenuPage> {
     }
   }
 
+
+  void _updateMenu(String id) {
+    String name = _nameController.text.trim();
+    String price = _priceController.text;
+
+    if (name.isEmpty) {
+      print("name is empty");
+      customSnackbar("Please enter food name");
+    } else if (price.isEmpty) {
+      print("price is empty");
+      customSnackbar("Please enter food price");
+    } else {
+      int price = int.parse(_priceController.text.numericOnly());
+      MenuModel updateMenu = MenuModel(name: name, price: price);
+
+      print("NEW MENU : ${updateMenu.toString()}");
+
+      var addMenuController = Get.find<foodMenuController.MenuController>();
+      addMenuController.updateMenu(id, updateMenu).then(
+        (value) {
+          if (value.isSuccess) {
+            _nameController.text = "";
+            _priceController.text = "";
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            currentFocus.unfocus();
+            customSnackbar("Successfully update menu",
+                isError: false, title: "Success");
+          } else {
+            customSnackbar("Failed to update menu");
+            print("failed to add menu : ${value.message}");
+          }
+        },
+      );
+    }
+  }
+
+  void _deleteMenu(String id) {
+    var deleteMenuController = Get.find<foodMenuController.MenuController>();
+    deleteMenuController.deleteMenu(id).then(
+      (value) {
+        if (value) {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          currentFocus.unfocus();
+          customSnackbar("Successfully deleted menu",
+              isError: false, title: "Success");
+        } else {
+          customSnackbar("Failed to delete menu");
+        }
+      },
+    );
+  }
+  
   void _showEditDialog() {
     Get.defaultDialog(
       title: "Edit Menu",
@@ -207,13 +260,20 @@ class _MenuPageState extends State<MenuPage> {
                               SizedBox(
                                 width: 10,
                               ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.1,
-                                height: MediaQuery.of(context).size.width * 0.1,
-                                child: FittedBox(
-                                  child: Icon(
-                                    Icons.delete,
-                                    color: Appcolors.redColor,
+                              GestureDetector(
+                                onTap: () => _deleteMenu(
+                                    MenuModel.fromJson(menus.menuList[index])
+                                        .id!),
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  child: FittedBox(
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: Appcolors.redColor,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -221,6 +281,11 @@ class _MenuPageState extends State<MenuPage> {
                                 width: 10,
                               ),
                               GestureDetector(
+
+                                onTap: () => _updateMenu(
+                                    MenuModel.fromJson(menus.menuList[index])
+                                        .id!),
+
                                 onTap: () {
                                   _editNameController.text =
                                       MenuModel.fromJson(menus.menuList[index])
@@ -234,6 +299,7 @@ class _MenuPageState extends State<MenuPage> {
 
                                   _showEditDialog();
                                 },
+
                                 child: Container(
                                   width:
                                       MediaQuery.of(context).size.width * 0.1,
