@@ -67,7 +67,6 @@ class _MenuPageState extends State<MenuPage> {
     }
   }
 
-
   void _updateMenu(String id) {
     String name = _nameController.text.trim();
     String price = _priceController.text;
@@ -118,7 +117,7 @@ class _MenuPageState extends State<MenuPage> {
       },
     );
   }
-  
+
   void _showEditDialog() {
     Get.defaultDialog(
       title: "Edit Menu",
@@ -281,10 +280,9 @@ class _MenuPageState extends State<MenuPage> {
                                 width: 10,
                               ),
                               GestureDetector(
-
-                                onTap: () => _updateMenu(
-                                    MenuModel.fromJson(menus.menuList[index])
-                                        .id!),
+                                // onTap: () => _updateMenu(
+                                //     MenuModel.fromJson(menus.menuList[index])
+                                //         .id!),
 
                                 onTap: () {
                                   _editNameController.text =
