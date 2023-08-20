@@ -54,6 +54,54 @@ class _CustomerPageState extends State<CustomerPage> {
     }
   }
 
+  void _updateCustomer(String id) {
+    String name = _nameController.text.trim();
+    String address = _addressController.text;
+
+    if (name.isEmpty) {
+      print("name is empty");
+      customSnackbar("Please enter customer name");
+    } else if (address.isEmpty) {
+      print("address is empty");
+      customSnackbar("Please enter customer address");
+    } else {
+      CustomerModel updateCustomer =
+          CustomerModel(name: name, address: address);
+
+      var addCustomerController = Get.find<CustomerController>();
+      addCustomerController.updateCustomer(id, updateCustomer).then((value) {
+        if (value.isSuccess) {
+          _nameController.text = "";
+          _addressController.text = "";
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          currentFocus.unfocus();
+          customSnackbar("Successfully update customer",
+              isError: false, title: "Success");
+        } else {
+          customSnackbar("Failed to update customer");
+
+          print("failed to update customer : ${value.message}");
+        }
+      });
+    }
+  }
+
+  void _deleteCustomer(String id) {
+    var deleteCustomerController = Get.find<CustomerController>();
+    deleteCustomerController.deleteCustomer(id).then(
+      (value) {
+        if (value) {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          currentFocus.unfocus();
+          customSnackbar("Successfully deleted customer",
+              isError: false, title: "Success");
+        } else {
+          customSnackbar("Failed to delete customer");
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,13 +189,25 @@ class _CustomerPageState extends State<CustomerPage> {
                                       )
                                     ]),
                               ),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.1,
-                                height: MediaQuery.of(context).size.width * 0.1,
-                                child: FittedBox(
-                                  child: Icon(
-                                    Icons.keyboard_arrow_right,
-                                    color: Colors.black,
+                              GestureDetector(
+                                // onTap: () => _updateCustomer(
+                                //     CustomerModel.fromJson(
+                                //             customers.customerList[index])
+                                //         .id!),
+                                onTap: () => _deleteCustomer(
+                                    CustomerModel.fromJson(
+                                            customers.customerList[index])
+                                        .id!),
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.1,
+                                  child: FittedBox(
+                                    child: Icon(
+                                      Icons.keyboard_arrow_right,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
                               ),
