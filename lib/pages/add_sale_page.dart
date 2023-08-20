@@ -1,16 +1,22 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:food_sales_recording_application/controllers/customer_controller.dart';
+import 'package:food_sales_recording_application/models/menu_model.dart';
 import 'package:food_sales_recording_application/models/transaction_item_model.dart';
 import 'package:food_sales_recording_application/sql_controllers/sale_helper.dart';
 import 'package:food_sales_recording_application/sql_controllers/sale_items_helper.dart';
 import 'package:food_sales_recording_application/utils/app_colors.dart';
 import 'package:food_sales_recording_application/widgets/custom_number_text_field.dart';
 import 'package:food_sales_recording_application/widgets/custom_text_field.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 
+import '../models/customer_model.dart';
 import '../sql_controllers/sale_items_sql_controller.dart';
 import '../sql_controllers/sales_sql_controller.dart';
+import 'package:food_sales_recording_application/controllers/menu_controller.dart'
+    as foodMenuController;
 
 class AddSalePage extends StatefulWidget {
   const AddSalePage({super.key});
@@ -22,7 +28,7 @@ class AddSalePage extends StatefulWidget {
 class _AddSalePageState extends State<AddSalePage> {
   final formatCurrency = NumberFormat.decimalPattern();
 
-  final TextEditingController _nameController = TextEditingController();
+  // final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _deliveryFeeController = TextEditingController();
   int _tempDeliveryFee = 0;
@@ -70,6 +76,10 @@ class _AddSalePageState extends State<AddSalePage> {
   List<Map<String, dynamic>> _data = [];
   List<Map<String, dynamic>> _dataItem = [];
   int sales_id = -1;
+  String itemName = "";
+  int itemPcs = 0;
+  int itemPrice = 0;
+  String customerName = "";
 
   void _refreshDataOld() async {
     // final data = await SaleHelper.getSales();
@@ -128,7 +138,7 @@ class _AddSalePageState extends State<AddSalePage> {
   Future<void> _addSale() async {
     sales_id = await SaleSQLController.createSale(
         1,
-        _nameController.text,
+        customerName,
         _addressController.text,
         int.parse(_deliveryFeeController.text.replaceAll(',', '')),
         totalSale);
@@ -190,25 +200,46 @@ class _AddSalePageState extends State<AddSalePage> {
                 ),
               ),
               child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: selectedCustomer,
-                  // isDense: true,
-                  hint: Text("Customer Name"),
-                  isExpanded: true,
-                  onChanged: (newValue) {
-                    _addressController.text = "Surabaya 100";
-
-                    setState(() {
-                      selectedCustomer = newValue;
-                    });
-                  },
-                  items: listCustomer.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
+                child: GetBuilder<CustomerController>(builder: (customers) {
+                  return DropdownButton<String>(
+                    value: selectedCustomer,
+                    // isDense: true,
+                    hint: Text("Customer Name"),
+                    isExpanded: true,
+                    onChanged: (newValue) {
+                      setState(() {
+                        Map<String, dynamic> customer =
+                            customers.customerList.firstWhere(
+                          (element) {
+                            if (newValue ==
+                                CustomerModel.fromJson(element).id) {
+                              return true;
+                            }
+                            return false;
+                          },
+                        );
+                        selectedCustomer = newValue;
+                        customerName = CustomerModel.fromJson(customer).name;
+                        _addressController.text =
+                            CustomerModel.fromJson(customer).address;
+                      });
+                    },
+                    items: customers.customerList.map(
+                      (element) {
+                        return DropdownMenuItem<String>(
+                          value: CustomerModel.fromJson(element).id,
+                          child: Text(CustomerModel.fromJson(element).name),
+                        );
+                      },
+                    ).toList(),
+                    // items: listCustomer.map((String value) {
+                    //   return DropdownMenuItem<String>(
+                    //     value: value,
+                    //     child: Text(value),
+                    //   );
+                    // }).toList(),
+                  );
+                }),
               ),
             ),
             SizedBox(
@@ -251,24 +282,55 @@ class _AddSalePageState extends State<AddSalePage> {
                       ),
                     ),
                     child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: selectedValue,
-                        // isDense: true,
-                        isExpanded: true,
-                        onChanged: (newValue) {
-                          _priceController.text =
-                              formatCurrency.format(22000).toString();
-                          setState(() {
-                            selectedValue = newValue;
-                          });
-                        },
-                        items: items.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
+                      child: GetBuilder<foodMenuController.MenuController>(
+                          builder: (menus) {
+                        return DropdownButton<String>(
+                          value: selectedValue,
+                          // isDense: true,
+                          isExpanded: true,
+                          onChanged: (newValue) {
+                            // _priceController.text =
+                            //     formatCurrency.format(22000).toString();
+                            // setState(() {
+                            //   selectedValue = newValue;
+                            // });
+
+                            setState(() {
+                              Map<String, dynamic> menu =
+                                  menus.menuList.firstWhere(
+                                (element) {
+                                  if (newValue ==
+                                      MenuModel.fromJson(element).id) {
+                                    return true;
+                                  }
+                                  return false;
+                                },
+                              );
+
+                              itemName = MenuModel.fromJson(menu).name;
+                              itemPrice = MenuModel.fromJson(menu).price;
+                              selectedValue = newValue;
+                              _priceController.text = formatCurrency
+                                  .format(MenuModel.fromJson(menu).price)
+                                  .toString();
+                            });
+                          },
+                          items: menus.menuList.map(
+                            (element) {
+                              return DropdownMenuItem<String>(
+                                value: MenuModel.fromJson(element).id,
+                                child: Text(MenuModel.fromJson(element).name),
+                              );
+                            },
+                          ).toList(),
+                          // items: items.map((String value) {
+                          //   return DropdownMenuItem<String>(
+                          //     value: value,
+                          //     child: Text(value),
+                          //   );
+                          // }).toList(),
+                        );
+                      }),
                     ),
                   ),
                 ),
@@ -314,16 +376,17 @@ class _AddSalePageState extends State<AddSalePage> {
             ),
             GestureDetector(
               onTap: () {
-                if (selectedValue != "" &&
-                    _priceController.value != 0 &&
+                if (itemName != "" &&
+                    itemPrice != 0 &&
                     _pcsController.value != 0) {
+                  itemPcs = int.parse(_pcsController.text);
                   setState(() {
                     _items.add(TransactionItemModel(
-                      name: selectedValue!,
-                      price: 10000,
-                      pcs: int.parse(_pcsController.text),
+                      name: itemName,
+                      price: itemPrice,
+                      pcs: itemPcs,
                     ));
-                    totalSale += (10000 * int.parse(_pcsController.text));
+                    totalSale += (itemPcs * itemPrice);
                     print(_items);
                   });
                 }
