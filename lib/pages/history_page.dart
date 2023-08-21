@@ -39,6 +39,7 @@ class _HistoryPageState extends State<HistoryPage> {
   ];
 
   int choosedMonth = 0;
+  int choosedYear = 0;
 
   final isExpandedList1 = List<bool>.generate(1, (int index) => false);
   final isExpandedList2 = List<bool>.generate(3, (int index) => false);
@@ -174,9 +175,10 @@ class _HistoryPageState extends State<HistoryPage> {
   void initState() {
     super.initState();
     var now = new DateTime.now();
-    var formatter = new DateFormat('MM');
-    String month = formatter.format(now);
+    var formatterMonth = new DateFormat('MM');
+    String month = formatterMonth.format(now);
     choosedMonth = int.parse(month);
+    choosedYear = now.year;
     _refreshData(month);
   }
 
@@ -192,9 +194,30 @@ class _HistoryPageState extends State<HistoryPage> {
               alignment: Alignment.center,
               width: double.infinity,
               color: Appcolors.darkColor,
-              child: TitleText(
-                text: "2023",
-                isBold: true,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    color: Appcolors.lightColor,
+                    icon: Icon(Icons.navigate_before),
+                    onPressed: () {
+                      choosedYear--;
+                      setState(() {});
+                    },
+                  ),
+                  TitleText(
+                    text: "$choosedYear",
+                    isBold: true,
+                  ),
+                  IconButton(
+                    color: Appcolors.lightColor,
+                    icon: Icon(Icons.navigate_next),
+                    onPressed: () {
+                      choosedYear++;
+                      setState(() {});
+                    },
+                  ),
+                ],
               ),
             ),
             Container(
