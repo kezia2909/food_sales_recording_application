@@ -239,7 +239,7 @@ class _HistoryPageState extends State<HistoryPage> {
             ),
             Expanded(
               child: _dataThisMonth.length == 0
-                  ? Container()
+                  ? Container(child: Text("no data"))
                   : ListView.builder(
                       itemCount: groupedData.length,
                       itemBuilder: (BuildContext context, int indexGroup) {
