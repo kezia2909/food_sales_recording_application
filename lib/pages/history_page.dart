@@ -51,6 +51,8 @@ class _HistoryPageState extends State<HistoryPage> {
   List<List<bool>> isExpandedList = [];
   int counterGroup = 0;
 
+  bool isPaidOff = false;
+
   void _refreshData(String month) async {
     final dataThisMonth = await SaleSQLController.getSalesByDate(month);
     setState(() {
@@ -372,6 +374,25 @@ class _HistoryPageState extends State<HistoryPage> {
                                                                               "Street No 100",
                                                                           size:
                                                                               12,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              5,
+                                                                        ),
+                                                                        Row(
+                                                                          children: [
+                                                                            GestureDetector(
+                                                                                onTap: () {
+                                                                                  setState(() {
+                                                                                    isPaidOff = !isPaidOff;
+                                                                                  });
+                                                                                },
+                                                                                child: Icon(isPaidOff ? Icons.check_box : Icons.check_box_outline_blank)),
+                                                                            SizedBox(
+                                                                              width: 5,
+                                                                            ),
+                                                                            Text("Paid Off"),
+                                                                          ],
                                                                         ),
                                                                       ],
                                                                     ),

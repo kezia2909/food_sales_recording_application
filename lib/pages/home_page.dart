@@ -35,6 +35,8 @@ class _HomePageState extends State<HomePage> {
   int _moreThisMonth = 0;
   final formatCurrency = NumberFormat.decimalPattern();
 
+  bool isPaidOff = false;
+
   void _refreshData() async {
     // final data = await SaleHelper.getSales();
     // final dataItem = await SaleItemsHelper.getSaleItems();
@@ -306,6 +308,31 @@ class _HomePageState extends State<HomePage> {
                                                               text:
                                                                   "Street No 100",
                                                               size: 12,
+                                                            ),
+                                                            SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                GestureDetector(
+                                                                    onTap: () {
+                                                                      setState(
+                                                                          () {
+                                                                        isPaidOff =
+                                                                            !isPaidOff;
+                                                                      });
+                                                                    },
+                                                                    child: Icon(isPaidOff
+                                                                        ? Icons
+                                                                            .check_box
+                                                                        : Icons
+                                                                            .check_box_outline_blank)),
+                                                                SizedBox(
+                                                                  width: 5,
+                                                                ),
+                                                                Text(
+                                                                    "Paid Off"),
+                                                              ],
                                                             ),
                                                           ],
                                                         ),
