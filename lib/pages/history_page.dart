@@ -10,6 +10,7 @@ import '../models/transaction_item_model.dart';
 import '../sql_controllers/sale_items_sql_controller.dart';
 import '../sql_controllers/sales_sql_controller.dart';
 import '../widgets/children_detail_item_history.dart';
+import '../widgets/detail_text.dart';
 import '../widgets/title_item_history.dart';
 import '../widgets/trailing_item_history.dart';
 
@@ -311,7 +312,88 @@ class _HistoryPageState extends State<HistoryPage> {
                                                     ).toList());
                                                   }
                                                 },
-                                              )
+                                              ),
+                                              Container(
+                                                  margin: EdgeInsets.symmetric(
+                                                      horizontal: 20),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Container(
+                                                          color: Colors.white,
+                                                          child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Container(
+                                                                  margin: EdgeInsets
+                                                                      .only(
+                                                                          right:
+                                                                              4),
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerRight,
+                                                                  width: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      0.15,
+                                                                  child:
+                                                                      Container(),
+                                                                ),
+                                                                Expanded(
+                                                                  child:
+                                                                      Container(
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.spaceBetween,
+                                                                            children: [
+                                                                              DetailText(
+                                                                                text: "Delivery Fee",
+                                                                                isBold: true,
+                                                                              ),
+                                                                              DetailText(
+                                                                                text: NumberFormat.decimalPattern().format(10000),
+                                                                                isBold: true,
+                                                                              )
+                                                                            ]),
+                                                                        DetailText(
+                                                                          text:
+                                                                              "Street No 100",
+                                                                          size:
+                                                                              12,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ]),
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.1,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.1,
+                                                      ),
+                                                    ],
+                                                  )),
                                               // for (int i = 0; i < 3; i++)
                                               //   ChildrenDetailItemHistory(
                                               //     pcs: 1,
