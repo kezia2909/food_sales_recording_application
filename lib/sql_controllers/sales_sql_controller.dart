@@ -4,8 +4,13 @@ import 'package:sqflite/sqflite.dart';
 class SaleSQLController {
   // static final SaleSQLController instance = SaleSQLController._();
 
-  static Future<int> createSale(int customer_id, String customer_name,
-      String delivery_address, int delivery_fee, int total) async {
+  static Future<int> createSale(
+      int customer_id,
+      String customer_name,
+      String delivery_address,
+      int delivery_fee,
+      int total,
+      bool is_paid_off) async {
     print("create sale controller");
     final db = await SQLHelper.database;
     print("db : ${db.toString()}");
@@ -15,7 +20,8 @@ class SaleSQLController {
       'customer_name': customer_name,
       'delivery_address': delivery_address,
       'delivery_fee': delivery_fee,
-      'total': total
+      'total': total,
+      'is_paid_off': is_paid_off
     };
 
     // final id = await SQLHelper.database.then(
@@ -89,5 +95,16 @@ class SaleSQLController {
 
     print("result : ${result.first}");
     return result.first['totalSum'] ?? 0;
+  }
+
+  static Future<void> updateIsPaidOff(int id) async {
+    final db = await SQLHelper.database;
+
+    await db.update(
+      'sales',
+      {'is_paid_off': 1},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }
