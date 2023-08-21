@@ -11,6 +11,7 @@ import 'package:food_sales_recording_application/widgets/icon_box.dart';
 import 'package:food_sales_recording_application/widgets/title_item_history.dart';
 import 'package:food_sales_recording_application/widgets/title_text.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
+import 'package:intl/intl.dart';
 
 import '../widgets/detail_text.dart';
 import '../widgets/trailing_item_history.dart';
@@ -28,16 +29,33 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> _data = [];
   List<Map<String, dynamic>> _dataItemExpanse = [];
   List<Map<String, dynamic>> _dataItem = [];
+  int _totalThisMonth = 0;
+  int _targetThisMonth = 0;
+  double _percentageThisMonth = 0;
+  int _moreThisMonth = 0;
+  final formatCurrency = NumberFormat.decimalPattern();
 
   void _refreshData() async {
     // final data = await SaleHelper.getSales();
     // final dataItem = await SaleItemsHelper.getSaleItems();
+    final totalThisMonth = await SaleSQLController.getTotalSalesThisMonth();
+    print("TOTAL : $totalThisMonth");
+    // print("TOTAL : ${totalThisMonth.runtimeType}");
 
     final data = await SaleSQLController.getSales();
     final dataItem = await SaleItemSQLController.getSaleItems(null);
+    int targetThisMonth = 5000000;
+    double percentageThisMonth = 0.0;
+    percentageThisMonth = (totalThisMonth as int).toDouble() / targetThisMonth;
+    int moreThisMonth = targetThisMonth - totalThisMonth;
+    print("TOTAL : $percentageThisMonth");
     setState(() {
       _data = data;
       _dataItem = dataItem;
+      _totalThisMonth = totalThisMonth as int;
+      _targetThisMonth = targetThisMonth;
+      _percentageThisMonth = percentageThisMonth;
+      _moreThisMonth = moreThisMonth;
     });
 
     print("DATA SQL HOME: " + _data.length.toString());
@@ -113,7 +131,9 @@ class _HomePageState extends State<HomePage> {
                               size: 10,
                             ),
                             TitleText(
-                              text: "IDR 1,000,000",
+                              text: formatCurrency
+                                  .format(_targetThisMonth)
+                                  .toString(),
                               isBold: true,
                             ),
                             Container(
@@ -127,8 +147,8 @@ class _HomePageState extends State<HomePage> {
                                   Appcolors.whiteColor,
                                 ], stops: [
                                   0.0,
-                                  0.3,
-                                  0.3,
+                                  _percentageThisMonth,
+                                  _percentageThisMonth,
                                   1.0
                                 ]),
                                 border:
@@ -139,7 +159,8 @@ class _HomePageState extends State<HomePage> {
                             Container(
                               alignment: Alignment.centerRight,
                               child: DetailText(
-                                text: "700,000 more",
+                                text:
+                                    "${formatCurrency.format(_moreThisMonth).toString()} more",
                                 color: Appcolors.lightColor,
                                 size: 10,
                               ),
