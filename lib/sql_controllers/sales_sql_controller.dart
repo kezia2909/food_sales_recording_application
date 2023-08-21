@@ -72,4 +72,22 @@ class SaleSQLController {
         orderBy: 'createdAt DESC',
         where: "strftime('%m', createdAt) = '$month'");
   }
+
+  static Future<Object> getTotalSalesThisMonth() async {
+    final db = await SQLHelper.database;
+    final now = DateTime.now();
+    final currentYear = now.year;
+    final currentMonth = now.month;
+
+    final result = await db.rawQuery('''
+    SELECT SUM(total) AS totalSum
+    FROM sales
+    WHERE strftime('%Y-%m', createdAt) = ?  
+  ''', [
+      '${currentYear.toString().padLeft(4, '0')}-${currentMonth.toString().padLeft(2, '0')}'
+    ]);
+
+    print("result : ${result.first}");
+    return result.first['totalSum'] ?? 0;
+  }
 }
