@@ -45,4 +45,36 @@ class CustomerController extends GetxController {
 
     return responseModel;
   }
+
+  Future<ResponseModel> updateCustomer(
+      String id, CustomerModel updateCustomer) async {
+    print("send : ${updateCustomer.name}");
+    Response response = await customerRepo.updateCustomer(id, updateCustomer);
+    late ResponseModel responseModel;
+
+    if (response.statusCode == 200) {
+      responseModel = ResponseModel(
+          true, "${response.body["id"]} = ${response.body["name"]}");
+    } else {
+      responseModel =
+          ResponseModel(false, "${response.statusCode} - ${response.body}");
+    }
+
+    await Get.find<CustomerController>().getCustomerList();
+
+    update();
+
+    return responseModel;
+  }
+
+  Future<bool> deleteCustomer(String id) async {
+    Response response = await customerRepo.deleteCustomer(id);
+    await Get.find<CustomerController>().getCustomerList();
+    update();
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
