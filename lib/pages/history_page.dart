@@ -145,8 +145,12 @@ class _HistoryPageState extends State<HistoryPage> {
     Get.defaultDialog(
       title: 'Confirmation',
       middleText: 'Are you sure the transaction is paid off?',
+      backgroundColor: Appcolors.lightColor,
       actions: [
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.greenColor,
+              foregroundColor: Appcolors.whiteColor),
           onPressed: () {
             updateIsPaidOff(id);
             Get.back(result: true); // Return true when "Yes" is pressed
@@ -154,6 +158,9 @@ class _HistoryPageState extends State<HistoryPage> {
           child: Text('Yes'),
         ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.redColor,
+              foregroundColor: Appcolors.whiteColor),
           onPressed: () {
             Get.back(result: false); // Return false when "No" is pressed
           },
