@@ -45,25 +45,20 @@ class SaleSQLController {
     return id;
   }
 
-  static Future<List<Map<String, dynamic>>> getSales() async {
+  static Future<List<Map<String, dynamic>>> getSales(
+      {bool unpaidOnly = false}) async {
     print("get sales controller");
     final db = await SQLHelper.database;
     print("db : ${db.toString()}");
 
     print("OTW GET");
     print("${db.query('sales', orderBy: 'id')}");
+
+    if (unpaidOnly) {
+      return db.query('sales',
+          orderBy: 'customer_name ASC', where: 'is_paid_off = 0');
+    }
     return db.query('sales', orderBy: 'id');
-
-    // await SQLHelper.database.then(
-    //   (db) {
-    //     print("available table");
-    //     print(db.query('sales', orderBy: 'id').toString());
-
-    //     return db.query('sales', orderBy: 'id');
-    //   },
-    // );
-
-    // return [];
   }
 
   static Future<List<Map<String, dynamic>>> getSalesByDate(String month) async {
