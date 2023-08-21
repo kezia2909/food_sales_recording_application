@@ -55,8 +55,16 @@ class _HistoryPageState extends State<HistoryPage> {
 
   bool isPaidOff = false;
 
-  void _refreshData(String month) async {
-    final dataThisMonth = await SaleSQLController.getSalesByDate(month);
+  void _refreshData(int month, int year) async {
+    String tempMonth = "";
+    if (month < 10) {
+      tempMonth = "0$month";
+    } else {
+      tempMonth = "$month";
+    }
+    String tempYear = year.toString();
+    final dataThisMonth =
+        await SaleSQLController.getSalesByDate(tempMonth, tempYear);
     setState(() {
       counterGroup = -1;
       _dataThisMonth = dataThisMonth;
@@ -133,13 +141,13 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Future<void> updateIsPaidOff(int id) async {
     await SaleSQLController.updateIsPaidOff(id);
-    String month = "";
-    if (choosedMonth < 10) {
-      month = "0$choosedMonth";
-    } else {
-      month = "$choosedMonth";
-    }
-    _refreshData(month);
+    // String month = "";
+    // if (choosedMonth < 10) {
+    //   month = "0$choosedMonth";
+    // } else {
+    //   month = "$choosedMonth";
+    // }
+    _refreshData(choosedMonth, choosedYear);
   }
 
   void showConfirmationDialog(int id) {
@@ -175,11 +183,12 @@ class _HistoryPageState extends State<HistoryPage> {
   void initState() {
     super.initState();
     var now = new DateTime.now();
-    var formatterMonth = new DateFormat('MM');
-    String month = formatterMonth.format(now);
-    choosedMonth = int.parse(month);
+    // var formatterMonth = new DateFormat('MM');
+    // String month = formatterMonth.format(now);
+    // choosedMonth = int.parse(month);
+    choosedMonth = now.month;
     choosedYear = now.year;
-    _refreshData(month);
+    _refreshData(choosedMonth, choosedYear);
   }
 
   @override
@@ -202,7 +211,9 @@ class _HistoryPageState extends State<HistoryPage> {
                     icon: Icon(Icons.navigate_before),
                     onPressed: () {
                       choosedYear--;
-                      setState(() {});
+                      setState(() {
+                        _refreshData(choosedMonth, choosedYear);
+                      });
                     },
                   ),
                   TitleText(
@@ -214,7 +225,9 @@ class _HistoryPageState extends State<HistoryPage> {
                     icon: Icon(Icons.navigate_next),
                     onPressed: () {
                       choosedYear++;
-                      setState(() {});
+                      setState(() {
+                        _refreshData(choosedMonth, choosedYear);
+                      });
                     },
                   ),
                 ],
@@ -240,13 +253,13 @@ class _HistoryPageState extends State<HistoryPage> {
                         setState(() {
                           print(listOfMonth[index]);
                           choosedMonth = index + 1;
-                          String month = "";
-                          if (choosedMonth < 10) {
-                            month = "0$choosedMonth";
-                          } else {
-                            month = "$choosedMonth";
-                          }
-                          _refreshData(month);
+                          // String month = "";
+                          // if (choosedMonth < 10) {
+                          //   month = "0$choosedMonth";
+                          // } else {
+                          //   month = "$choosedMonth";
+                          // }
+                          _refreshData(choosedMonth, choosedYear);
                         });
                       },
                       child: Container(
