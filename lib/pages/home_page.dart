@@ -88,11 +88,11 @@ class _HomePageState extends State<HomePage> {
     print("CHECK BOOL SETTING SET STATE- $isExpandedList");
 
     for (var sale in _dataUnpaid) {
-      String customerName = sale['customer_name'];
+      String customerId = sale['customer_id'].toString();
 
-      if (!groupedDataSales.containsKey(customerName)) {
+      if (!groupedDataSales.containsKey(customerId)) {
         print("START - masuk");
-        groupedDataSales[customerName] = [];
+        groupedDataSales[customerId] = [];
         if (firstTime == false) {
           print("START - not first time");
           print(
@@ -108,9 +108,9 @@ class _HomePageState extends State<HomePage> {
           expansionTileControllers.add(tempexpansionTile);
         }
         firstTime = false;
-        tempCustomer = customerName;
+        tempCustomer = customerId;
       }
-      groupedDataSales[customerName]!.add(sale);
+      groupedDataSales[customerId]!.add(sale);
     }
     print("START - last");
     print("$tempCustomer : ${groupedDataSales[tempCustomer]!.length}");
@@ -218,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TitleText(
-                    text: "Saturday, 29 July 2023",
+                    text: formatDateString(DateTime.now().toString()),
                   ),
                   SizedBox(
                     height: 8,
