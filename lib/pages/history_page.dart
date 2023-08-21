@@ -299,41 +299,58 @@ class _HistoryPageState extends State<HistoryPage> {
                                                 isExpanded:
                                                     isExpandedList[indexGroup]
                                                         [indexItem]),
-                                            title: groupedData.entries
-                                                            .toList()[indexGroup]
-                                                            .value[indexItem]
-                                                        ['is_paid_off'] ==
-                                                    1
-                                                ? TitleItemHistory(
-                                                    icon: Icons
-                                                        .warning_amber_rounded,
-                                                    title: groupedData.entries
-                                                            .toList()[indexGroup]
-                                                            .value[indexItem]
-                                                        ['customer_name'],
-                                                    subTitle: 'PAID OFF',
-                                                    total:
-                                                        groupedData.entries
-                                                                .toList()[
-                                                                    indexGroup]
-                                                                .value[
-                                                            indexItem]['total'],
-                                                  )
-                                                : TitleItemHistory(
-                                                    icon: Icons
-                                                        .warning_amber_rounded,
-                                                    title: groupedData.entries
-                                                            .toList()[indexGroup]
-                                                            .value[indexItem]
-                                                        ['customer_name'],
-                                                    subTitle: 'UNPAID',
-                                                    total:
-                                                        groupedData.entries
-                                                                .toList()[
-                                                                    indexGroup]
-                                                                .value[
-                                                            indexItem]['total'],
-                                                  ),
+                                            title: TitleItemHistory(
+                                              icon: Icons.warning_amber_rounded,
+                                              title: groupedData.entries
+                                                      .toList()[indexGroup]
+                                                      .value[indexItem]
+                                                  ['customer_name'],
+                                              total: groupedData.entries
+                                                  .toList()[indexGroup]
+                                                  .value[indexItem]['total'],
+                                              isPaidOff: groupedData.entries
+                                                              .toList()[indexGroup]
+                                                              .value[indexItem]
+                                                          ['is_paid_off'] ==
+                                                      1
+                                                  ? true
+                                                  : false,
+                                            ),
+                                            // title: groupedData.entries
+                                            //                 .toList()[indexGroup]
+                                            //                 .value[indexItem]
+                                            //             ['is_paid_off'] ==
+                                            //         1
+                                            //     ? TitleItemHistory(
+                                            //         icon: Icons
+                                            //             .warning_amber_rounded,
+                                            //         title: groupedData.entries
+                                            //                 .toList()[indexGroup]
+                                            //                 .value[indexItem]
+                                            //             ['customer_name'],
+                                            //         total:
+                                            //             groupedData.entries
+                                            //                     .toList()[
+                                            //                         indexGroup]
+                                            //                     .value[
+                                            //                 indexItem]['total'],
+
+                                            //       )
+                                            //     : TitleItemHistory(
+                                            //         icon: Icons
+                                            //             .warning_amber_rounded,
+                                            //         title: groupedData.entries
+                                            //                 .toList()[indexGroup]
+                                            //                 .value[indexItem]
+                                            //             ['customer_name'],
+                                            //         subTitle: 'UNPAID',
+                                            //         total:
+                                            //             groupedData.entries
+                                            //                     .toList()[
+                                            //                         indexGroup]
+                                            //                     .value[
+                                            //                 indexItem]['total'],
+                                            //       ),
                                             children: [
                                               FutureBuilder<
                                                   List<TransactionItemModel>>(

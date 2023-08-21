@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
 
     final data = await SaleSQLController.getSales();
     final dataItem = await SaleItemSQLController.getSaleItems(null);
-    int targetThisMonth = 5000000;
+    int targetThisMonth = 5000;
     double percentageThisMonth = 0.0;
     percentageThisMonth = (totalThisMonth as int).toDouble() / targetThisMonth;
     int moreThisMonth = targetThisMonth - totalThisMonth;
@@ -245,19 +245,28 @@ class _HomePageState extends State<HomePage> {
                                 trailing: TrailingItemHistory(
                                   isExpanded: isExpandedList[index],
                                 ),
-                                title: _data[index]['is_paid_off'] == 1
-                                    ? TitleItemHistory(
-                                        icon: Icons.assignment_ind_outlined,
-                                        title: _data[index]['customer_name'],
-                                        subTitle: 'PAID OFF',
-                                        total: _data[index]['total'],
-                                      )
-                                    : TitleItemHistory(
-                                        icon: Icons.warning_amber_rounded,
-                                        title: _data[index]['customer_name'],
-                                        subTitle: 'UNPAID',
-                                        total: _data[index]['total'],
-                                      ),
+                                // title: _data[index]['is_paid_off'] == 1
+                                //     ? TitleItemHistory(
+                                //         icon: Icons.assignment_ind_outlined,
+                                //         title: _data[index]['customer_name'],
+                                //         subTitle: 'PAID OFF',
+                                //         total: _data[index]['total'],
+                                //       )
+                                //     : TitleItemHistory(
+                                //         icon: Icons.warning_amber_rounded,
+                                //         title: _data[index]['customer_name'],
+                                //         subTitle: 'UNPAID',
+                                //         total: _data[index]['total'],
+                                //       ),
+                                title: TitleItemHistory(
+                                  icon: Icons.warning_amber_rounded,
+                                  title: _data[index]['customer_name'],
+                                  // subTitle: 'UNPAID',
+                                  total: _data[index]['total'],
+                                  isPaidOff: _data[index]['is_paid_off'] == 1
+                                      ? true
+                                      : false,
+                                ),
                                 children: [
                                   FutureBuilder<List<TransactionItemModel>>(
                                     future:

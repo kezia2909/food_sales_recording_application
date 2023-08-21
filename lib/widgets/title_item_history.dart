@@ -8,14 +8,16 @@ import 'icon_box.dart';
 class TitleItemHistory extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String subTitle;
+  // final String subTitle;
   final int total;
-  const TitleItemHistory(
+  bool isPaidOff;
+  TitleItemHistory(
       {super.key,
       required this.icon,
       required this.title,
-      required this.subTitle,
-      required this.total});
+      // required this.subTitle,
+      required this.total,
+      this.isPaidOff = false});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +28,10 @@ class TitleItemHistory extends StatelessWidget {
       color: Colors.white,
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         IconBox(
-          icon: Icons.warning_amber_rounded,
-          iconColor: Appcolors.mediumColor,
+          icon: isPaidOff
+              ? Icons.assignment_outlined
+              : Icons.warning_amber_rounded,
+          iconColor: isPaidOff ? Appcolors.greenColor : Appcolors.mediumColor,
           backgroundColor: Colors.transparent,
           size: MediaQuery.of(context).size.width * 0.15,
           marginRight: 4,
@@ -43,11 +47,17 @@ class TitleItemHistory extends StatelessWidget {
                       DetailText(
                         text: title,
                       ),
-                      DetailText(
-                        text: subTitle,
-                        color: Appcolors.mediumColor,
-                        isBold: true,
-                      )
+                      isPaidOff
+                          ? DetailText(
+                              text: "PAID OFF",
+                              color: Appcolors.greenColor,
+                              isBold: true,
+                            )
+                          : DetailText(
+                              text: "UNPAID",
+                              color: Appcolors.mediumColor,
+                              isBold: true,
+                            )
                     ],
                   ),
                   DetailText(
