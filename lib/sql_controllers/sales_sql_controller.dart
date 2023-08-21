@@ -59,4 +59,17 @@ class SaleSQLController {
 
     // return [];
   }
+
+  static Future<List<Map<String, dynamic>>> getSalesByDate(String month) async {
+    print("get sales controller");
+    final db = await SQLHelper.database;
+    print("db : ${db.toString()}");
+
+    print("OTW GET");
+    print(
+        "${db.query('sales', orderBy: 'id', where: "strftime('%m', createdAt) = '$month'")}");
+    return db.query('sales',
+        orderBy: 'createdAt DESC',
+        where: "strftime('%m', createdAt) = '$month'");
+  }
 }
