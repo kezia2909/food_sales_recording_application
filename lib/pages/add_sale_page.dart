@@ -80,6 +80,7 @@ class _AddSalePageState extends State<AddSalePage> {
   int itemPcs = 0;
   int itemPrice = 0;
   String customerName = "";
+  bool isPaidOff = false;
 
   void _refreshDataOld() async {
     // final data = await SaleHelper.getSales();
@@ -444,21 +445,53 @@ class _AddSalePageState extends State<AddSalePage> {
             ),
             Divider(),
             Container(
-                margin: EdgeInsets.only(top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "TOTAL : ${formatCurrency.format(totalSale)}",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                    ElevatedButton(
-                      child: Text("Submit"),
-                      onPressed: () => (_addSale()),
-                    )
-                  ],
-                )),
+              margin: EdgeInsets.only(top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "TOTAL : ${formatCurrency.format(totalSale)}",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Row(
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isPaidOff = !isPaidOff;
+                            });
+                          },
+                          child: Icon(isPaidOff
+                              ? Icons.check_box
+                              : Icons.check_box_outline_blank)),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text("Paid Off"),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            GestureDetector(
+              onTap: () => (_addSale()),
+              child: Container(
+                width: double.maxFinite,
+                padding: EdgeInsets.symmetric(vertical: 5),
+                margin: EdgeInsets.symmetric(vertical: 5),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: Appcolors.darkColor,
+                    borderRadius: BorderRadius.circular(5)),
+                child: Text(
+                  "SUBMIT",
+                  style: TextStyle(color: Appcolors.lightColor),
+                ),
+              ),
+            ),
           ],
         ),
       ),
