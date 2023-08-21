@@ -20,7 +20,7 @@ class DateRow extends StatelessWidget {
           color: Appcolors.darkGreyColor,
         ),
         DetailText(
-          text: "IDR " + totalText,
+          text: "\$ " + totalText,
           color: Appcolors.darkGreyColor,
         ),
       ]),
