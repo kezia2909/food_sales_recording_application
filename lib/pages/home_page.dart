@@ -35,6 +35,8 @@ class _HomePageState extends State<HomePage> {
   int _moreThisMonth = 0;
   final formatCurrency = NumberFormat.decimalPattern();
 
+  bool isPaidOff = false;
+
   void _refreshData() async {
     // final data = await SaleHelper.getSales();
     // final dataItem = await SaleItemsHelper.getSaleItems();
@@ -247,7 +249,110 @@ class _HomePageState extends State<HomePage> {
                                         ).toList());
                                       }
                                     },
-                                  )
+                                  ),
+                                  Container(
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 20),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              color: Colors.white,
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                      margin: EdgeInsets.only(
+                                                          right: 4),
+                                                      alignment:
+                                                          Alignment.centerRight,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.15,
+                                                      child: Container(),
+                                                    ),
+                                                    Expanded(
+                                                      child: Container(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  DetailText(
+                                                                    text:
+                                                                        "Delivery Fee",
+                                                                    isBold:
+                                                                        true,
+                                                                  ),
+                                                                  DetailText(
+                                                                    text: NumberFormat
+                                                                            .decimalPattern()
+                                                                        .format(
+                                                                            10000),
+                                                                    isBold:
+                                                                        true,
+                                                                  )
+                                                                ]),
+                                                            DetailText(
+                                                              text:
+                                                                  "Street No 100",
+                                                              size: 12,
+                                                            ),
+                                                            SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                GestureDetector(
+                                                                    onTap: () {
+                                                                      setState(
+                                                                          () {
+                                                                        isPaidOff =
+                                                                            !isPaidOff;
+                                                                      });
+                                                                    },
+                                                                    child: Icon(isPaidOff
+                                                                        ? Icons
+                                                                            .check_box
+                                                                        : Icons
+                                                                            .check_box_outline_blank)),
+                                                                SizedBox(
+                                                                  width: 5,
+                                                                ),
+                                                                Text(
+                                                                    "Paid Off"),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ]),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.1,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.1,
+                                          ),
+                                        ],
+                                      )),
                                 ],
                               ),
                               Divider()
