@@ -10,6 +10,7 @@ import 'package:food_sales_recording_application/widgets/date_row.dart';
 import 'package:food_sales_recording_application/widgets/icon_box.dart';
 import 'package:food_sales_recording_application/widgets/title_item_history.dart';
 import 'package:food_sales_recording_application/widgets/title_text.dart';
+import 'package:get/get.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 import 'package:intl/intl.dart';
 
@@ -86,6 +87,33 @@ class _HomePageState extends State<HomePage> {
               pcs: e["pcs"],
             ))
         .toList();
+  }
+
+  Future<void> updateIsPaidOff(int id) async {
+    await SaleSQLController.updateIsPaidOff(id);
+    _refreshData();
+  }
+
+  void showConfirmationDialog(int id) {
+    Get.defaultDialog(
+      title: 'Confirmation',
+      middleText: 'Are you sure the transaction is paid off?',
+      actions: [
+        ElevatedButton(
+          onPressed: () {
+            updateIsPaidOff(id);
+            Get.back(result: true); // Return true when "Yes" is pressed
+          },
+          child: Text('Yes'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Get.back(result: false); // Return false when "No" is pressed
+          },
+          child: Text('No'),
+        ),
+      ],
+    );
   }
 
   @override
@@ -217,12 +245,19 @@ class _HomePageState extends State<HomePage> {
                                 trailing: TrailingItemHistory(
                                   isExpanded: isExpandedList[index],
                                 ),
-                                title: TitleItemHistory(
-                                  icon: Icons.warning_amber_rounded,
-                                  title: _data[index]['customer_name'],
-                                  subTitle: 'UNPAID',
-                                  total: _data[index]['total'],
-                                ),
+                                title: _data[index]['is_paid_off'] == 1
+                                    ? TitleItemHistory(
+                                        icon: Icons.assignment_ind_outlined,
+                                        title: _data[index]['customer_name'],
+                                        subTitle: 'PAID OFF',
+                                        total: _data[index]['total'],
+                                      )
+                                    : TitleItemHistory(
+                                        icon: Icons.warning_amber_rounded,
+                                        title: _data[index]['customer_name'],
+                                        subTitle: 'UNPAID',
+                                        total: _data[index]['total'],
+                                      ),
                                 children: [
                                   FutureBuilder<List<TransactionItemModel>>(
                                     future:
@@ -306,35 +341,43 @@ class _HomePageState extends State<HomePage> {
                                                                   )
                                                                 ]),
                                                             DetailText(
-                                                              text:
-                                                                  "Street No 100",
+                                                              text: _data[index]
+                                                                  [
+                                                                  'delivery_address'],
                                                               size: 12,
                                                             ),
-                                                            SizedBox(
-                                                              height: 5,
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                GestureDetector(
-                                                                    onTap: () {
-                                                                      setState(
-                                                                          () {
-                                                                        isPaidOff =
-                                                                            !isPaidOff;
-                                                                      });
-                                                                    },
-                                                                    child: Icon(isPaidOff
-                                                                        ? Icons
-                                                                            .check_box
-                                                                        : Icons
-                                                                            .check_box_outline_blank)),
-                                                                SizedBox(
-                                                                  width: 5,
-                                                                ),
-                                                                Text(
-                                                                    "Paid Off"),
-                                                              ],
-                                                            ),
+                                                            _data[index][
+                                                                        'is_paid_off'] ==
+                                                                    1
+                                                                ? Container()
+                                                                : SizedBox(
+                                                                    height: 5,
+                                                                  ),
+                                                            _data[index][
+                                                                        'is_paid_off'] ==
+                                                                    1
+                                                                ? Container()
+                                                                : Row(
+                                                                    children: [
+                                                                      GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            showConfirmationDialog(_data[index]['id']);
+                                                                            // setState(() {
+                                                                            //   isPaidOff = !isPaidOff;
+                                                                            // });
+                                                                          },
+                                                                          child: Icon(isPaidOff
+                                                                              ? Icons.check_box
+                                                                              : Icons.check_box_outline_blank)),
+                                                                      SizedBox(
+                                                                        width:
+                                                                            5,
+                                                                      ),
+                                                                      Text(
+                                                                          "Paid Off"),
+                                                                    ],
+                                                                  ),
                                                           ],
                                                         ),
                                                       ),

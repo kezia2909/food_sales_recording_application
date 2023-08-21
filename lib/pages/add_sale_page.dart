@@ -142,8 +142,9 @@ class _AddSalePageState extends State<AddSalePage> {
         1,
         customerName,
         _addressController.text,
-        int.parse(_deliveryFeeController.text.replaceAll(',', '')),
-        totalSale);
+        int.tryParse(_deliveryFeeController.text.replaceAll(',', '')) ?? 0,
+        totalSale,
+        isPaidOff);
     setState(() {});
     _refreshData();
     print("items : ${_items.toString()}");

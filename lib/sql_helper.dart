@@ -35,6 +35,7 @@ class SQLHelper {
         delivery_address TEXT,
         delivery_fee INTEGER,
         total INTEGER,
+        is_paid_off BOOLEAN,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
     ''');

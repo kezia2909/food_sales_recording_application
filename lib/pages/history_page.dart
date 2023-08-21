@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:food_sales_recording_application/utils/app_colors.dart';
 import 'package:food_sales_recording_application/widgets/date_row.dart';
 import 'package:food_sales_recording_application/widgets/title_text.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../models/transaction_item_model.dart';
@@ -127,6 +128,39 @@ class _HistoryPageState extends State<HistoryPage> {
               pcs: e["pcs"],
             ))
         .toList();
+  }
+
+  Future<void> updateIsPaidOff(int id) async {
+    await SaleSQLController.updateIsPaidOff(id);
+    String month = "";
+    if (choosedMonth < 10) {
+      month = "0$choosedMonth";
+    } else {
+      month = "$choosedMonth";
+    }
+    _refreshData(month);
+  }
+
+  void showConfirmationDialog(int id) {
+    Get.defaultDialog(
+      title: 'Confirmation',
+      middleText: 'Are you sure the transaction is paid off?',
+      actions: [
+        ElevatedButton(
+          onPressed: () {
+            updateIsPaidOff(id);
+            Get.back(result: true); // Return true when "Yes" is pressed
+          },
+          child: Text('Yes'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Get.back(result: false); // Return false when "No" is pressed
+          },
+          child: Text('No'),
+        ),
+      ],
+    );
   }
 
   @override
@@ -265,17 +299,41 @@ class _HistoryPageState extends State<HistoryPage> {
                                                 isExpanded:
                                                     isExpandedList[indexGroup]
                                                         [indexItem]),
-                                            title: TitleItemHistory(
-                                              icon: Icons.warning_amber_rounded,
-                                              title: groupedData.entries
-                                                      .toList()[indexGroup]
-                                                      .value[indexItem]
-                                                  ['customer_name'],
-                                              subTitle: 'UNPAID',
-                                              total: groupedData.entries
-                                                  .toList()[indexGroup]
-                                                  .value[indexItem]['total'],
-                                            ),
+                                            title: groupedData.entries
+                                                            .toList()[indexGroup]
+                                                            .value[indexItem]
+                                                        ['is_paid_off'] ==
+                                                    1
+                                                ? TitleItemHistory(
+                                                    icon: Icons
+                                                        .warning_amber_rounded,
+                                                    title: groupedData.entries
+                                                            .toList()[indexGroup]
+                                                            .value[indexItem]
+                                                        ['customer_name'],
+                                                    subTitle: 'PAID OFF',
+                                                    total:
+                                                        groupedData.entries
+                                                                .toList()[
+                                                                    indexGroup]
+                                                                .value[
+                                                            indexItem]['total'],
+                                                  )
+                                                : TitleItemHistory(
+                                                    icon: Icons
+                                                        .warning_amber_rounded,
+                                                    title: groupedData.entries
+                                                            .toList()[indexGroup]
+                                                            .value[indexItem]
+                                                        ['customer_name'],
+                                                    subTitle: 'UNPAID',
+                                                    total:
+                                                        groupedData.entries
+                                                                .toList()[
+                                                                    indexGroup]
+                                                                .value[
+                                                            indexItem]['total'],
+                                                  ),
                                             children: [
                                               FutureBuilder<
                                                   List<TransactionItemModel>>(
@@ -370,30 +428,35 @@ class _HistoryPageState extends State<HistoryPage> {
                                                                               )
                                                                             ]),
                                                                         DetailText(
-                                                                          text:
-                                                                              "Street No 100",
+                                                                          text: groupedData
+                                                                              .entries
+                                                                              .toList()[indexGroup]
+                                                                              .value[indexItem]['delivery_address'],
                                                                           size:
                                                                               12,
                                                                         ),
-                                                                        SizedBox(
-                                                                          height:
-                                                                              5,
-                                                                        ),
-                                                                        Row(
-                                                                          children: [
-                                                                            GestureDetector(
-                                                                                onTap: () {
-                                                                                  setState(() {
-                                                                                    isPaidOff = !isPaidOff;
-                                                                                  });
-                                                                                },
-                                                                                child: Icon(isPaidOff ? Icons.check_box : Icons.check_box_outline_blank)),
-                                                                            SizedBox(
-                                                                              width: 5,
-                                                                            ),
-                                                                            Text("Paid Off"),
-                                                                          ],
-                                                                        ),
+                                                                        groupedData.entries.toList()[indexGroup].value[indexItem]['is_paid_off'] ==
+                                                                                1
+                                                                            ? Container()
+                                                                            : SizedBox(
+                                                                                height: 5,
+                                                                              ),
+                                                                        groupedData.entries.toList()[indexGroup].value[indexItem]['is_paid_off'] ==
+                                                                                1
+                                                                            ? Container()
+                                                                            : Row(
+                                                                                children: [
+                                                                                  GestureDetector(
+                                                                                      onTap: () {
+                                                                                        showConfirmationDialog(groupedData.entries.toList()[indexGroup].value[indexItem]['id']);
+                                                                                      },
+                                                                                      child: Icon(isPaidOff ? Icons.check_box : Icons.check_box_outline_blank)),
+                                                                                  SizedBox(
+                                                                                    width: 5,
+                                                                                  ),
+                                                                                  Text("Paid Off"),
+                                                                                ],
+                                                                              ),
                                                                       ],
                                                                     ),
                                                                   ),
