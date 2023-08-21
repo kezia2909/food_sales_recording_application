@@ -244,9 +244,8 @@ class _HomePageState extends State<HomePage> {
                               size: 10,
                             ),
                             TitleText(
-                              text: formatCurrency
-                                  .format(_targetThisMonth)
-                                  .toString(),
+                              text:
+                                  "\$ ${formatCurrency.format(_targetThisMonth).toString()}",
                               isBold: true,
                             ),
                             Container(
@@ -273,7 +272,7 @@ class _HomePageState extends State<HomePage> {
                               alignment: Alignment.centerRight,
                               child: DetailText(
                                 text:
-                                    "${formatCurrency.format(_moreThisMonth).toString()} more",
+                                    "\$ ${formatCurrency.format(_moreThisMonth).toString()} more",
                                 color: Appcolors.lightColor,
                                 size: 10,
                               ),
@@ -307,7 +306,7 @@ class _HomePageState extends State<HomePage> {
                           DateRow(
                             date: groupedDataSales.entries
                                 .toList()[indexGroup]
-                                .key,
+                                .value[0]['customer_name'],
                             total: totalSum,
                           ),
                           ListView.builder(
