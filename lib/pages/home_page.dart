@@ -43,8 +43,10 @@ class _HomePageState extends State<HomePage> {
     final totalThisMonth = await SaleSQLController.getTotalSalesThisMonth();
     print("TOTAL : $totalThisMonth");
 
+
     final dataUnpaid = await SaleSQLController.getSales(unpaidOnly: true);
-    int targetThisMonth = 5000000;
+    int targetThisMonth = 5000;
+
     double percentageThisMonth = 0.0;
     percentageThisMonth = (totalThisMonth as int).toDouble() / targetThisMonth;
     int moreThisMonth = targetThisMonth - totalThisMonth;

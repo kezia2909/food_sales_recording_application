@@ -39,6 +39,7 @@ class _HistoryPageState extends State<HistoryPage> {
   ];
 
   int choosedMonth = 0;
+  int choosedYear = 0;
 
   final isExpandedList1 = List<bool>.generate(1, (int index) => false);
   final isExpandedList2 = List<bool>.generate(3, (int index) => false);
@@ -145,8 +146,12 @@ class _HistoryPageState extends State<HistoryPage> {
     Get.defaultDialog(
       title: 'Confirmation',
       middleText: 'Are you sure the transaction is paid off?',
+      backgroundColor: Appcolors.lightColor,
       actions: [
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.greenColor,
+              foregroundColor: Appcolors.whiteColor),
           onPressed: () {
             updateIsPaidOff(id);
             Get.back(result: true); // Return true when "Yes" is pressed
@@ -154,6 +159,9 @@ class _HistoryPageState extends State<HistoryPage> {
           child: Text('Yes'),
         ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.redColor,
+              foregroundColor: Appcolors.whiteColor),
           onPressed: () {
             Get.back(result: false); // Return false when "No" is pressed
           },
@@ -167,9 +175,10 @@ class _HistoryPageState extends State<HistoryPage> {
   void initState() {
     super.initState();
     var now = new DateTime.now();
-    var formatter = new DateFormat('MM');
-    String month = formatter.format(now);
+    var formatterMonth = new DateFormat('MM');
+    String month = formatterMonth.format(now);
     choosedMonth = int.parse(month);
+    choosedYear = now.year;
     _refreshData(month);
   }
 
@@ -185,9 +194,30 @@ class _HistoryPageState extends State<HistoryPage> {
               alignment: Alignment.center,
               width: double.infinity,
               color: Appcolors.darkColor,
-              child: TitleText(
-                text: "2023",
-                isBold: true,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    color: Appcolors.lightColor,
+                    icon: Icon(Icons.navigate_before),
+                    onPressed: () {
+                      choosedYear--;
+                      setState(() {});
+                    },
+                  ),
+                  TitleText(
+                    text: "$choosedYear",
+                    isBold: true,
+                  ),
+                  IconButton(
+                    color: Appcolors.lightColor,
+                    icon: Icon(Icons.navigate_next),
+                    onPressed: () {
+                      choosedYear++;
+                      setState(() {});
+                    },
+                  ),
+                ],
               ),
             ),
             Container(
@@ -299,41 +329,58 @@ class _HistoryPageState extends State<HistoryPage> {
                                                 isExpanded:
                                                     isExpandedList[indexGroup]
                                                         [indexItem]),
-                                            title: groupedData.entries
-                                                            .toList()[indexGroup]
-                                                            .value[indexItem]
-                                                        ['is_paid_off'] ==
-                                                    1
-                                                ? TitleItemHistory(
-                                                    icon: Icons
-                                                        .warning_amber_rounded,
-                                                    title: groupedData.entries
-                                                            .toList()[indexGroup]
-                                                            .value[indexItem]
-                                                        ['customer_name'],
-                                                    subTitle: 'PAID OFF',
-                                                    total:
-                                                        groupedData.entries
-                                                                .toList()[
-                                                                    indexGroup]
-                                                                .value[
-                                                            indexItem]['total'],
-                                                  )
-                                                : TitleItemHistory(
-                                                    icon: Icons
-                                                        .warning_amber_rounded,
-                                                    title: groupedData.entries
-                                                            .toList()[indexGroup]
-                                                            .value[indexItem]
-                                                        ['customer_name'],
-                                                    subTitle: 'UNPAID',
-                                                    total:
-                                                        groupedData.entries
-                                                                .toList()[
-                                                                    indexGroup]
-                                                                .value[
-                                                            indexItem]['total'],
-                                                  ),
+                                            title: TitleItemHistory(
+                                              icon: Icons.warning_amber_rounded,
+                                              title: groupedData.entries
+                                                      .toList()[indexGroup]
+                                                      .value[indexItem]
+                                                  ['customer_name'],
+                                              total: groupedData.entries
+                                                  .toList()[indexGroup]
+                                                  .value[indexItem]['total'],
+                                              isPaidOff: groupedData.entries
+                                                              .toList()[indexGroup]
+                                                              .value[indexItem]
+                                                          ['is_paid_off'] ==
+                                                      1
+                                                  ? true
+                                                  : false,
+                                            ),
+                                            // title: groupedData.entries
+                                            //                 .toList()[indexGroup]
+                                            //                 .value[indexItem]
+                                            //             ['is_paid_off'] ==
+                                            //         1
+                                            //     ? TitleItemHistory(
+                                            //         icon: Icons
+                                            //             .warning_amber_rounded,
+                                            //         title: groupedData.entries
+                                            //                 .toList()[indexGroup]
+                                            //                 .value[indexItem]
+                                            //             ['customer_name'],
+                                            //         total:
+                                            //             groupedData.entries
+                                            //                     .toList()[
+                                            //                         indexGroup]
+                                            //                     .value[
+                                            //                 indexItem]['total'],
+
+                                            //       )
+                                            //     : TitleItemHistory(
+                                            //         icon: Icons
+                                            //             .warning_amber_rounded,
+                                            //         title: groupedData.entries
+                                            //                 .toList()[indexGroup]
+                                            //                 .value[indexItem]
+                                            //             ['customer_name'],
+                                            //         subTitle: 'UNPAID',
+                                            //         total:
+                                            //             groupedData.entries
+                                            //                     .toList()[
+                                            //                         indexGroup]
+                                            //                     .value[
+                                            //                 indexItem]['total'],
+                                            //       ),
                                             children: [
                                               FutureBuilder<
                                                   List<TransactionItemModel>>(
