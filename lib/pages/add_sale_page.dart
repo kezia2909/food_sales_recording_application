@@ -31,7 +31,6 @@ class _AddSalePageState extends State<AddSalePage> {
   // final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _deliveryFeeController = TextEditingController();
-  int _tempDeliveryFee = 0;
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _pcsController = TextEditingController();
   final SingleValueDropDownController _itemController =
@@ -73,6 +72,8 @@ class _AddSalePageState extends State<AddSalePage> {
   String? selectedCustomer;
   List<TransactionItemModel> _items = [];
   int totalSale = 0;
+  int totalItems = 0;
+  int deliveryFee = 0;
   List<Map<String, dynamic>> _data = [];
   List<Map<String, dynamic>> _dataItem = [];
   int sales_id = -1;
@@ -164,11 +165,22 @@ class _AddSalePageState extends State<AddSalePage> {
     setState(() {});
   }
 
+  void updateDeliveryFee() {
+    String deliveryFeeText = _deliveryFeeController.text.replaceAll(',', '');
+    int fee = int.tryParse(deliveryFeeText) ?? 0;
+
+    setState(() {
+      deliveryFee = fee;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     print("init state add sale page");
     _refreshData();
+    _deliveryFeeController.addListener(updateDeliveryFee);
+
     setState(() {});
   }
 
@@ -387,7 +399,7 @@ class _AddSalePageState extends State<AddSalePage> {
                       price: itemPrice,
                       pcs: itemPcs,
                     ));
-                    totalSale += (itemPcs * itemPrice);
+                    totalItems += (itemPcs * itemPrice);
                     print(_items);
                   });
                 }
@@ -450,7 +462,7 @@ class _AddSalePageState extends State<AddSalePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "TOTAL : ${formatCurrency.format(totalSale)}",
+                    "TOTAL : ${formatCurrency.format(totalItems + deliveryFee)}",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   Row(
@@ -477,7 +489,10 @@ class _AddSalePageState extends State<AddSalePage> {
               height: 10,
             ),
             GestureDetector(
-              onTap: () => (_addSale()),
+              onTap: () {
+                totalSale = totalItems + deliveryFee;
+                _addSale();
+              },
               child: Container(
                 width: double.maxFinite,
                 padding: EdgeInsets.symmetric(vertical: 5),

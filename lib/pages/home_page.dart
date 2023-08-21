@@ -298,8 +298,9 @@ class _HomePageState extends State<HomePage> {
                                                                   DetailText(
                                                                     text: NumberFormat
                                                                             .decimalPattern()
-                                                                        .format(
-                                                                            10000),
+                                                                        .format(_data[index]
+                                                                            [
+                                                                            'delivery_fee']),
                                                                     isBold:
                                                                         true,
                                                                   )

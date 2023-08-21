@@ -365,7 +365,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                                                                 isBold: true,
                                                                               ),
                                                                               DetailText(
-                                                                                text: NumberFormat.decimalPattern().format(10000),
+                                                                                text: NumberFormat.decimalPattern().format(groupedData.entries.toList()[indexGroup].value[indexItem]['delivery_fee']),
                                                                                 isBold: true,
                                                                               )
                                                                             ]),
