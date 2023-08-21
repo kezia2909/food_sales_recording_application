@@ -26,23 +26,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<List<bool>> isExpandedList = [];
+  List<List<ExpansionTileController>> expansionTileControllers = [];
+
   List<Map<String, dynamic>> _dataUnpaid = [];
-  List<Map<String, dynamic>> _dataItemExpanse = [];
-  List<Map<String, dynamic>> _dataItem = [];
-  int _totalThisMonth = 0;
+  // List<Map<String, dynamic>> _dataItemExpanse = [];
+  // List<Map<String, dynamic>> _dataItem = [];
+  // int _totalThisMonth = 0;
   int _targetThisMonth = 0;
   double _percentageThisMonth = 0;
   int _moreThisMonth = 0;
   final formatCurrency = NumberFormat.decimalPattern();
-
-  bool isPaidOff = false;
+  int tempIndexGroup = -1;
+  int tempIndexItem = -1;
+  // bool isPaidOff = false;
 
   Map<String, List<Map<String, dynamic>>> groupedDataSales = {};
 
   void _refreshData() async {
     final totalThisMonth = await SaleSQLController.getTotalSalesThisMonth();
     print("TOTAL : $totalThisMonth");
-
 
     final dataUnpaid = await SaleSQLController.getSales(unpaidOnly: true);
     int targetThisMonth = 5000;
@@ -53,13 +55,15 @@ class _HomePageState extends State<HomePage> {
     print("TOTAL : $percentageThisMonth");
     setState(() {
       _dataUnpaid = dataUnpaid;
-      _totalThisMonth = totalThisMonth as int;
+      // _totalThisMonth = totalThisMonth as int;
       _targetThisMonth = targetThisMonth;
       _percentageThisMonth = percentageThisMonth;
       _moreThisMonth = moreThisMonth;
     });
 
     if (_dataUnpaid.length != 0) {
+      print("CHECK BOOL DATA UNPAID - $isExpandedList");
+
       settingData();
     }
 
@@ -72,17 +76,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   void settingData() {
-    isExpandedList.clear();
-    groupedDataSales.clear();
     String tempCustomer = "";
     bool firstTime = true;
+    print("CHECK BOOL SETTING - $isExpandedList");
+
+    setState(() {
+      expansionTileControllers.clear();
+      isExpandedList.clear();
+      groupedDataSales.clear();
+    });
+    print("CHECK BOOL SETTING SET STATE- $isExpandedList");
 
     for (var sale in _dataUnpaid) {
-      String customerName = sale['customer_name'];
+      String customerId = sale['customer_id'].toString();
 
-      if (!groupedDataSales.containsKey(customerName)) {
+      if (!groupedDataSales.containsKey(customerId)) {
         print("START - masuk");
-        groupedDataSales[customerName] = [];
+        groupedDataSales[customerId] = [];
         if (firstTime == false) {
           print("START - not first time");
           print(
@@ -91,11 +101,16 @@ class _HomePageState extends State<HomePage> {
           var tempExpandedList = List<bool>.generate(
               groupedDataSales[tempCustomer]!.length, (int index) => false);
           isExpandedList.add(tempExpandedList);
+
+          var tempexpansionTile = List<ExpansionTileController>.generate(
+              groupedDataSales[tempCustomer]!.length,
+              (int index) => ExpansionTileController());
+          expansionTileControllers.add(tempexpansionTile);
         }
         firstTime = false;
-        tempCustomer = customerName;
+        tempCustomer = customerId;
       }
-      groupedDataSales[customerName]!.add(sale);
+      groupedDataSales[customerId]!.add(sale);
     }
     print("START - last");
     print("$tempCustomer : ${groupedDataSales[tempCustomer]!.length}");
@@ -103,8 +118,16 @@ class _HomePageState extends State<HomePage> {
     var tempExpandedList = List<bool>.generate(
         groupedDataSales[tempCustomer]!.length, (int index) => false);
     isExpandedList.add(tempExpandedList);
+
+    var tempexpansionTile = List<ExpansionTileController>.generate(
+        groupedDataSales[tempCustomer]!.length,
+        (int index) => ExpansionTileController());
+    expansionTileControllers.add(tempexpansionTile);
+
     print("GROUP");
     print(groupedDataSales.toString());
+    setState(() {});
+    print("CHECK BOOL SETTING SET STATE 2- $isExpandedList");
   }
 
   // Future<void> _getDataItemExpanse(int sales_id) async {
@@ -131,7 +154,13 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> updateIsPaidOff(int id) async {
     await SaleSQLController.updateIsPaidOff(id);
+    print("CHECK BOOL UPDATE - $isExpandedList");
+
+    setState(() {});
+    print("CHECK BOOL UPDATE SET STATE- $isExpandedList");
+
     _refreshData();
+    print("CHECK BOOL AFTER REFRESH - $isExpandedList");
   }
 
   void showConfirmationDialog(int id) {
@@ -143,6 +172,12 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             updateIsPaidOff(id);
             Get.back(result: true); // Return true when "Yes" is pressed
+            setState(() {
+              expansionTileControllers[tempIndexGroup][tempIndexItem]
+                  .collapse();
+
+              print("CHECK BOOL YES - $isExpandedList");
+            });
           },
           child: Text('Yes'),
         ),
@@ -183,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TitleText(
-                    text: "Saturday, 29 July 2023",
+                    text: formatDateString(DateTime.now().toString()),
                   ),
                   SizedBox(
                     height: 8,
@@ -284,6 +319,9 @@ class _HomePageState extends State<HomePage> {
                                 .value
                                 .length,
                             itemBuilder: (context, indexItem) {
+                              print(
+                                  "CHECK BOOL DESIGN : ${isExpandedList[indexGroup][indexItem]}");
+                              print("CHECK BOOL DESIGN : ${isExpandedList}");
                               return Container(
                                 color: Colors.white,
                                 child: ListTileTheme(
@@ -296,8 +334,13 @@ class _HomePageState extends State<HomePage> {
                                     child: Column(
                                       children: [
                                         ExpansionTile(
-                                          onExpansionChanged: (value) async {
+                                          controller: expansionTileControllers[
+                                              indexGroup][indexItem],
+                                          onExpansionChanged: (value) {
                                             setState(() {
+                                              print(
+                                                  "CHECK BOOL VALUE : $value");
+
                                               print(
                                                   "CHECK INDEX : [$indexGroup][$indexItem]");
                                               isExpandedList[indexGroup]
@@ -306,6 +349,9 @@ class _HomePageState extends State<HomePage> {
                                                       [indexItem];
                                             });
                                           },
+                                          // initiallyExpanded:
+                                          //     isExpandedList[indexGroup]
+                                          //         [indexItem],
                                           trailing: TrailingItemHistory(
                                             isExpanded:
                                                 isExpandedList[indexGroup]
@@ -319,7 +365,6 @@ class _HomePageState extends State<HomePage> {
                                                         .toList()[indexGroup]
                                                         .value[indexItem]
                                                     ['createdAt']),
-                                            subTitle: 'UNPAID',
                                             total: groupedDataSales.entries
                                                 .toList()[indexGroup]
                                                 .value[indexItem]['total'],
@@ -425,6 +470,14 @@ class _HomePageState extends State<HomePage> {
                                                                         children: [
                                                                           GestureDetector(
                                                                               onTap: () {
+                                                                                tempIndexGroup = indexGroup;
+                                                                                tempIndexItem = indexItem;
+                                                                                setState(() {
+                                                                                  print("CHECK BOOL NEW 1 ${isExpandedList[indexGroup][indexItem]}");
+                                                                                  // isExpandedList[indexGroup][indexItem] = !isExpandedList[indexGroup][indexItem];
+                                                                                  // expansionTileControllers[indexGroup][indexItem].collapse();
+                                                                                  print("CHECK BOOL NEW 2 ${isExpandedList[indexGroup][indexItem]}");
+                                                                                });
                                                                                 showConfirmationDialog(groupedDataSales.entries.toList()[indexGroup].value[indexItem]['id']);
                                                                                 // setState(() {
                                                                                 //   isPaidOff = !isPaidOff;

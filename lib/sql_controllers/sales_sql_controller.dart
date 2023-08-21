@@ -61,17 +61,18 @@ class SaleSQLController {
     return db.query('sales', orderBy: 'id');
   }
 
-  static Future<List<Map<String, dynamic>>> getSalesByDate(String month) async {
+  static Future<List<Map<String, dynamic>>> getSalesByDate(
+      String month, String year) async {
     print("get sales controller");
     final db = await SQLHelper.database;
     print("db : ${db.toString()}");
 
     print("OTW GET");
     print(
-        "${db.query('sales', orderBy: 'id', where: "strftime('%m', createdAt) = '$month'")}");
+        "${db.query('sales', orderBy: 'id', where: "strftime('%Y-%m', createdAt) = '$year-$month'")}");
     return db.query('sales',
         orderBy: 'createdAt DESC',
-        where: "strftime('%m', createdAt) = '$month'");
+        where: "strftime('%Y-%m', createdAt) = '$year-$month'");
   }
 
   static Future<Object> getTotalSalesThisMonth() async {

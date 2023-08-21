@@ -74,79 +74,51 @@ class _AddSalePageState extends State<AddSalePage> {
   int totalSale = 0;
   int totalItems = 0;
   int deliveryFee = 0;
-  List<Map<String, dynamic>> _data = [];
-  List<Map<String, dynamic>> _dataItem = [];
+
   int sales_id = -1;
   String itemName = "";
   int itemPcs = 0;
   int itemPrice = 0;
   String customerName = "";
+  int customer_id = -1;
   bool isPaidOff = false;
 
-  void _refreshDataOld() async {
-    // final data = await SaleHelper.getSales();
-    // final dataItem = await SaleItemsHelper.getSaleItems();
-
+  void _refreshData() async {
+    totalSale = 0;
+    totalItems = 0;
+    deliveryFee = 0;
+    isPaidOff = false;
+    customer_id = -1;
+    _addressController.clear();
+    _deliveryFeeController.clear();
+    _priceController.clear();
+    _pcsController.clear();
+    _itemController.clearDropDown();
+    selectedCustomer = null;
+    selectedValue = null;
+    _items.clear();
+    // final data = await SaleSQLController.getSales();
+    // final dataItem = await SaleItemSQLController.getSaleItems(null);
     // setState(() {
     //   _data = data;
     //   _dataItem = dataItem;
     // });
-    // print("DATA FROM SQL : " + _data.length.toString());
+
+    // print("DATA SQL HOME: " + _data.length.toString());
     // print(_data.toString());
-    // print("DATA ITEM : ");
+    // print("DATA ITEM SQL HOME: " + _dataItem.length.toString());
     // print(_dataItem.toString());
-
-    // print("ID : $sales_id");
-    // _items.forEach(
-    //   (element) {
-    //     print("element new : ${element.toString()}");
-    //     print(element.name);
-    //     _addSaleItem(sales_id, element);
-    //   },
-    // );
-  }
-
-  void _refreshData() async {
-    // final data = await SaleHelper.getSales();
-    // final dataItem = await SaleItemsHelper.getSaleItems();
-
-    final data = await SaleSQLController.getSales();
-    final dataItem = await SaleItemSQLController.getSaleItems(null);
-    setState(() {
-      _data = data;
-      _dataItem = dataItem;
-    });
-
-    print("DATA SQL HOME: " + _data.length.toString());
-    print(_data.toString());
-    print("DATA ITEM SQL HOME: " + _dataItem.length.toString());
-    print(_dataItem.toString());
-  }
-
-  Future<void> _addSaleOld() async {
-    // sales_id = await SaleHelper.createSale(
-    //     1,
-    //     _nameController.text,
-    //     _addressController.text,
-    //     int.parse(_deliveryFeeController.text.replaceAll(',', '')),
-    //     totalSale);
-    // setState(() {});
-    // _refreshData();
-    // print("items : ${_items.toString()}");
-
-    // print("adding data success");
   }
 
   Future<void> _addSale() async {
     sales_id = await SaleSQLController.createSale(
-        1,
+        customer_id,
         customerName,
         _addressController.text,
         int.tryParse(_deliveryFeeController.text.replaceAll(',', '')) ?? 0,
         totalSale,
         isPaidOff);
     setState(() {});
-    _refreshData();
     print("items : ${_items.toString()}");
 
     _items.forEach(
@@ -154,6 +126,7 @@ class _AddSalePageState extends State<AddSalePage> {
         _addSaleItem(sales_id, element);
       },
     );
+    _refreshData();
 
     print("adding data success");
   }
@@ -233,6 +206,8 @@ class _AddSalePageState extends State<AddSalePage> {
                           },
                         );
                         selectedCustomer = newValue;
+                        customer_id =
+                            int.parse(CustomerModel.fromJson(customer).id!);
                         customerName = CustomerModel.fromJson(customer).name;
                         _addressController.text =
                             CustomerModel.fromJson(customer).address;
