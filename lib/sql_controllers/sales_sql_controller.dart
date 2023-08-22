@@ -1,4 +1,5 @@
 import 'package:food_sales_recording_application/sql_helper.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SaleSQLController {
@@ -10,7 +11,8 @@ class SaleSQLController {
       String delivery_address,
       int delivery_fee,
       int total,
-      bool is_paid_off) async {
+      bool is_paid_off,
+      DateTime delivery_date) async {
     print("create sale controller");
     final db = await SQLHelper.database;
     print("db : ${db.toString()}");
@@ -21,7 +23,8 @@ class SaleSQLController {
       'delivery_address': delivery_address,
       'delivery_fee': delivery_fee,
       'total': total,
-      'is_paid_off': is_paid_off
+      'is_paid_off': is_paid_off,
+      'delivery_date': DateFormat('yyyy-MM-dd HH:mm:ss').format(delivery_date)
     };
 
     // final id = await SQLHelper.database.then(
@@ -69,10 +72,10 @@ class SaleSQLController {
 
     print("OTW GET");
     print(
-        "${db.query('sales', orderBy: 'id', where: "strftime('%Y-%m', createdAt) = '$year-$month'")}");
+        "${db.query('sales', orderBy: 'id', where: "strftime('%Y-%m', delivery_date) = '$year-$month'")}");
     return db.query('sales',
-        orderBy: 'createdAt DESC',
-        where: "strftime('%Y-%m', createdAt) = '$year-$month'");
+        orderBy: 'delivery_date DESC',
+        where: "strftime('%Y-%m', delivery_date) = '$year-$month'");
   }
 
   static Future<Object> getTotalSalesThisMonth() async {
@@ -84,7 +87,7 @@ class SaleSQLController {
     final result = await db.rawQuery('''
     SELECT SUM(total) AS totalSum
     FROM sales
-    WHERE strftime('%Y-%m', createdAt) = ?  
+    WHERE strftime('%Y-%m', delivery_date) = ?  
   ''', [
       '${currentYear.toString().padLeft(4, '0')}-${currentMonth.toString().padLeft(2, '0')}'
     ]);

@@ -86,7 +86,7 @@ class _AddSalePageState extends State<AddSalePage> {
 
   ScrollController _scrollController = ScrollController();
   bool _scrollEnabled = true;
-  DateTime? selectedDate;
+  DateTime selectedDate = DateTime.now();
 
   void _refreshData() async {
     selectedDate = DateTime.now();
@@ -123,7 +123,8 @@ class _AddSalePageState extends State<AddSalePage> {
         _addressController.text,
         int.tryParse(_deliveryFeeController.text.replaceAll(',', '')) ?? 0,
         totalSale,
-        isPaidOff);
+        isPaidOff,
+        selectedDate);
     setState(() {});
     print("items : ${_items.toString()}");
 
@@ -156,7 +157,7 @@ class _AddSalePageState extends State<AddSalePage> {
 
   String formatDateString(String dateString) {
     DateTime dateTime = DateTime.parse(dateString);
-    DateFormat formatter = DateFormat("E, d MMM ''yy");
+    DateFormat formatter = DateFormat('EEEE, d MMMM y', 'en_US');
     String formattedDate = formatter.format(dateTime);
     return formattedDate;
   }
