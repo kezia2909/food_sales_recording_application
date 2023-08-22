@@ -31,6 +31,7 @@ class _AddPageState extends State<AddPage> {
           ),
           Expanded(
               child: Container(
+                  color: Appcolors.whiteColor,
                   margin: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   child: AddSalePage())),
         ],
