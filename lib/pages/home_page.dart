@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
     print("TOTAL : $totalThisMonth");
 
     final dataUnpaid = await SaleSQLController.getSales(unpaidOnly: true);
-    int targetThisMonth = 5000;
+    int targetThisMonth = 5000000;
 
     double percentageThisMonth = 0.0;
     percentageThisMonth = (totalThisMonth as int).toDouble() / targetThisMonth;
@@ -245,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             TitleText(
                               text:
-                                  "\$ ${formatCurrency.format(_targetThisMonth).toString()}",
+                                  "\IDR ${formatCurrency.format(_targetThisMonth).toString()}",
                               isBold: true,
                             ),
                             Container(
@@ -272,7 +272,7 @@ class _HomePageState extends State<HomePage> {
                               alignment: Alignment.centerRight,
                               child: DetailText(
                                 text:
-                                    "\$ ${formatCurrency.format(_moreThisMonth).toString()} more",
+                                    "\IDR ${formatCurrency.format(_moreThisMonth).toString()} more",
                                 color: Appcolors.lightColor,
                                 size: 10,
                               ),
