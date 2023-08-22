@@ -87,13 +87,11 @@ class _HistoryPageState extends State<HistoryPage> {
     bool firstTime = true;
 
     for (var dataItem in _dataThisMonth) {
-      DateTime createdAt = DateTime.parse(dataItem['createdAt']);
-      print("DATE : $createdAt");
-      // String formattedDate =
-      //     "${createdAt.day} ${createdAt.month}, ${createdAt.year}";
+      DateTime deliveryDate = DateTime.parse(dataItem['delivery_date']);
+      print("DATE : $deliveryDate");
 
       String formattedDate =
-          DateFormat('EEEE, d MMMM y', 'en_US').format(createdAt);
+          DateFormat('EEEE, d MMMM y', 'en_US').format(deliveryDate);
 
       if (!groupedData.containsKey(formattedDate)) {
         print("try - ");

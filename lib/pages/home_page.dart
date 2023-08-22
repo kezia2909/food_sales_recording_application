@@ -439,7 +439,7 @@ class _HomePageState extends State<HomePage> {
                                                         .entries
                                                         .toList()[indexGroup]
                                                         .value[indexItem]
-                                                    ['createdAt']),
+                                                    ['delivery_date']),
                                             total: groupedDataSales.entries
                                                 .toList()[indexGroup]
                                                 .value[indexItem]['total'],

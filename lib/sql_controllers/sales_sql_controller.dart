@@ -72,10 +72,10 @@ class SaleSQLController {
 
     print("OTW GET");
     print(
-        "${db.query('sales', orderBy: 'id', where: "strftime('%Y-%m', createdAt) = '$year-$month'")}");
+        "${db.query('sales', orderBy: 'id', where: "strftime('%Y-%m', delivery_date) = '$year-$month'")}");
     return db.query('sales',
-        orderBy: 'createdAt DESC',
-        where: "strftime('%Y-%m', createdAt) = '$year-$month'");
+        orderBy: 'delivery_date DESC',
+        where: "strftime('%Y-%m', delivery_date) = '$year-$month'");
   }
 
   static Future<Object> getTotalSalesThisMonth() async {
@@ -87,7 +87,7 @@ class SaleSQLController {
     final result = await db.rawQuery('''
     SELECT SUM(total) AS totalSum
     FROM sales
-    WHERE strftime('%Y-%m', createdAt) = ?  
+    WHERE strftime('%Y-%m', delivery_date) = ?  
   ''', [
       '${currentYear.toString().padLeft(4, '0')}-${currentMonth.toString().padLeft(2, '0')}'
     ]);
