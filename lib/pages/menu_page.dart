@@ -74,9 +74,11 @@ class _MenuPageState extends State<MenuPage> {
     if (name.isEmpty) {
       print("name is empty");
       customSnackbar("Please enter food name");
+      _showEditDialog(id);
     } else if (price.isEmpty) {
       print("price is empty");
       customSnackbar("Please enter food price");
+      _showEditDialog(id);
     } else {
       int price = int.parse(_editPriceController.text.numericOnly());
       MenuModel updateMenu = MenuModel(name: name, price: price);
@@ -149,8 +151,8 @@ class _MenuPageState extends State<MenuPage> {
           ),
           GestureDetector(
             onTap: () {
-              _updateMenu(id);
               Get.back();
+              _updateMenu(id);
             },
             child: Container(
               width: double.maxFinite,
@@ -164,6 +166,36 @@ class _MenuPageState extends State<MenuPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showDeleteDialog(String id) {
+    Get.defaultDialog(
+      title: 'Delete Confirmation',
+      middleText: 'Are you sure delete menu?',
+      backgroundColor: Appcolors.lightColor,
+      actions: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.greenColor,
+              foregroundColor: Appcolors.whiteColor),
+          onPressed: () {
+            Get.back(); // Return true when "Yes" is pressed
+            _deleteMenu(id);
+            setState(() {});
+          },
+          child: Text('Yes'),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.redColor,
+              foregroundColor: Appcolors.whiteColor),
+          onPressed: () {
+            Get.back(); // Return false when "No" is pressed
+          },
+          child: Text('No'),
+        ),
+      ],
     );
   }
 
@@ -261,7 +293,7 @@ class _MenuPageState extends State<MenuPage> {
                                 width: 10,
                               ),
                               GestureDetector(
-                                onTap: () => _deleteMenu(
+                                onTap: () => _showDeleteDialog(
                                     MenuModel.fromJson(menus.menuList[index])
                                         .id!),
                                 child: Container(
