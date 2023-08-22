@@ -13,6 +13,7 @@ import 'package:food_sales_recording_application/widgets/title_text.dart';
 import 'package:get/get.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/currency_input_formatter.dart';
 import '../widgets/custom_snackbar.dart';
@@ -45,16 +46,51 @@ class _HomePageState extends State<HomePage> {
   Map<String, List<Map<String, dynamic>>> groupedDataSales = {};
   final TextEditingController _editTargetController = TextEditingController();
 
+  Future<int> _loadSavedTarget() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("LOAD TARGET : ${prefs.getInt('target')}");
+    // setState(() {
+    //   _targetThisMonth = prefs.getInt('target') ?? 0;
+    //   print("LOAD TARGET 2 : $_targetThisMonth");
+    // });
+    return prefs.getInt('target') ?? 0;
+  }
+
+  Future<void> _saveTarget(int target) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('target', target);
+    setState(() {
+      _targetThisMonth = target;
+    });
+    print("SAVE TARGET");
+    _refreshData();
+  }
+
   void _refreshData() async {
     final totalThisMonth = await SaleSQLController.getTotalSalesThisMonth();
     print("TOTAL : $totalThisMonth");
 
     final dataUnpaid = await SaleSQLController.getSales(unpaidOnly: true);
-    int targetThisMonth = 5000000;
 
     double percentageThisMonth = 0.0;
-    percentageThisMonth = (totalThisMonth as int).toDouble() / targetThisMonth;
-    int moreThisMonth = targetThisMonth - totalThisMonth;
+    int moreThisMonth = 0;
+
+    final targetThisMonth = await _loadSavedTarget();
+
+    print("TARGET THIS MONTH 2 : $_targetThisMonth");
+    print("TARGET THIS MONTH INSIDE 2 : $targetThisMonth");
+
+    if (targetThisMonth != 0) {
+      percentageThisMonth =
+          (totalThisMonth as int).toDouble() / targetThisMonth;
+
+      if (percentageThisMonth <= 1) {
+        moreThisMonth = targetThisMonth - (totalThisMonth as int);
+      }
+
+      print("TARGET percentageThisMonth : $percentageThisMonth");
+      print("TARGET moreThisMonth : $moreThisMonth");
+    }
     print("TOTAL : $percentageThisMonth");
     setState(() {
       _dataUnpaid = dataUnpaid;
@@ -237,8 +273,11 @@ class _HomePageState extends State<HomePage> {
 
               if (target.isEmpty) {
                 customSnackbar("Please enter target for this month");
+                _showEditDialog();
+              } else {
+                int newTarget = int.parse(target.replaceAll(',', ''));
+                _saveTarget(newTarget);
               }
-              _showEditDialog();
             },
             child: Container(
               width: double.maxFinite,
