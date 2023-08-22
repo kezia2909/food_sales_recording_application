@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
 
   String formatDateString(String dateString) {
     DateTime dateTime = DateTime.parse(dateString);
-    DateFormat formatter = DateFormat('EEEE, d MMMM y');
+    DateFormat formatter = DateFormat("E, d MMM ''yy");
     String formattedDate = formatter.format(dateTime);
     return formattedDate;
   }

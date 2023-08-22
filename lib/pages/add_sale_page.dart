@@ -83,6 +83,9 @@ class _AddSalePageState extends State<AddSalePage> {
   int customer_id = -1;
   bool isPaidOff = false;
 
+  ScrollController _scrollController = ScrollController();
+  bool _scrollEnabled = true;
+
   void _refreshData() async {
     totalSale = 0;
     totalItems = 0;
@@ -154,6 +157,7 @@ class _AddSalePageState extends State<AddSalePage> {
     print("init state add sale page");
     _refreshData();
     _deliveryFeeController.addListener(updateDeliveryFee);
+    // _scrollController.scrollEnabled = false;
 
     setState(() {});
   }
@@ -161,277 +165,318 @@ class _AddSalePageState extends State<AddSalePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Container(
         padding: EdgeInsets.only(top: 8),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // CustomTextField(
-            //   textEditingController: _nameController,
-            //   labelText: 'Customer name',
-            //   hintText: 'John Doe',
-            // ),
-            InputDecorator(
-              decoration: InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                border: new OutlineInputBorder(
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(8),
-                  ),
-                  borderSide: new BorderSide(
-                    color: Colors.black,
-                    width: 1.0,
-                  ),
-                ),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: GetBuilder<CustomerController>(builder: (customers) {
-                  return DropdownButton<String>(
-                    value: selectedCustomer,
-                    // isDense: true,
-                    hint: Text("Customer Name"),
-                    isExpanded: true,
-                    onChanged: (newValue) {
-                      setState(() {
-                        Map<String, dynamic> customer =
-                            customers.customerList.firstWhere(
-                          (element) {
-                            if (newValue ==
-                                CustomerModel.fromJson(element).id) {
-                              return true;
-                            }
-                            return false;
-                          },
-                        );
-                        selectedCustomer = newValue;
-                        customer_id =
-                            int.parse(CustomerModel.fromJson(customer).id!);
-                        customerName = CustomerModel.fromJson(customer).name;
-                        _addressController.text =
-                            CustomerModel.fromJson(customer).address;
-                      });
-                    },
-                    items: customers.customerList.map(
-                      (element) {
-                        return DropdownMenuItem<String>(
-                          value: CustomerModel.fromJson(element).id,
-                          child: Text(CustomerModel.fromJson(element).name),
-                        );
-                      },
-                    ).toList(),
-                    // items: listCustomer.map((String value) {
-                    //   return DropdownMenuItem<String>(
-                    //     value: value,
-                    //     child: Text(value),
-                    //   );
-                    // }).toList(),
-                  );
-                }),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            CustomTextField(
-              textEditingController: _addressController,
-              labelText: 'Customer address',
-              hintText: 'street no 100',
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            CustomNumberTextField(
-              textEditingController: _deliveryFeeController,
-              labelText: 'Delivery Fee',
-              hintText: '0',
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text("Foods : "),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  flex: 3,
-                  child: InputDecorator(
-                    decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                      border: new OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(8),
-                        ),
-                        borderSide: new BorderSide(
-                          color: Colors.black,
-                          width: 1.0,
-                        ),
-                      ),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: GetBuilder<foodMenuController.MenuController>(
-                          builder: (menus) {
-                        return DropdownButton<String>(
-                          value: selectedValue,
-                          // isDense: true,
-                          isExpanded: true,
-                          onChanged: (newValue) {
-                            // _priceController.text =
-                            //     formatCurrency.format(22000).toString();
-                            // setState(() {
-                            //   selectedValue = newValue;
-                            // });
-
-                            setState(() {
-                              Map<String, dynamic> menu =
-                                  menus.menuList.firstWhere(
-                                (element) {
-                                  if (newValue ==
-                                      MenuModel.fromJson(element).id) {
-                                    return true;
-                                  }
-                                  return false;
+            Expanded(
+              child: SingleChildScrollView(
+                // controller: _scrollController,
+                child: Wrap(
+                  runSpacing: 10,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      runSpacing: 15,
+                      children: [
+                        InputDecorator(
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 10),
+                            border: new OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(8),
+                              ),
+                              borderSide: new BorderSide(
+                                color: Colors.black,
+                                width: 1.0,
+                              ),
+                            ),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: GetBuilder<CustomerController>(
+                                builder: (customers) {
+                              return DropdownButton<String>(
+                                value: selectedCustomer,
+                                // isDense: true,
+                                hint: Text("Customer Name"),
+                                isExpanded: true,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    Map<String, dynamic> customer =
+                                        customers.customerList.firstWhere(
+                                      (element) {
+                                        if (newValue ==
+                                            CustomerModel.fromJson(element)
+                                                .id) {
+                                          return true;
+                                        }
+                                        return false;
+                                      },
+                                    );
+                                    selectedCustomer = newValue;
+                                    customer_id = int.parse(
+                                        CustomerModel.fromJson(customer).id!);
+                                    customerName =
+                                        CustomerModel.fromJson(customer).name;
+                                    _addressController.text =
+                                        CustomerModel.fromJson(customer)
+                                            .address;
+                                  });
                                 },
+                                items: customers.customerList.map(
+                                  (element) {
+                                    return DropdownMenuItem<String>(
+                                      value: CustomerModel.fromJson(element).id,
+                                      child: Text(
+                                          CustomerModel.fromJson(element).name),
+                                    );
+                                  },
+                                ).toList(),
+                                // items: listCustomer.map((String value) {
+                                //   return DropdownMenuItem<String>(
+                                //     value: value,
+                                //     child: Text(value),
+                                //   );
+                                // }).toList(),
                               );
+                            }),
+                          ),
+                        ),
+                        // SizedBox(
+                        //   height: 10,
+                        // ),
+                        CustomTextField(
+                          textEditingController: _addressController,
+                          labelText: 'Customer address',
+                          hintText: 'street no 100',
+                        ),
+                        // SizedBox(
+                        //   height: 10,
+                        // ),
+                        CustomNumberTextField(
+                          textEditingController: _deliveryFeeController,
+                          labelText: 'Delivery Fee',
+                          hintText: '0',
+                        ),
+                        // const SizedBox(
+                        //   height: 10,
+                        // ),
+                      ],
+                    ),
+                    Wrap(
+                      runSpacing: 5,
+                      children: [
+                        Text("Foods : "),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              flex: 3,
+                              child: InputDecorator(
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10),
+                                  border: new OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                      const Radius.circular(8),
+                                    ),
+                                    borderSide: new BorderSide(
+                                      color: Colors.black,
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: GetBuilder<
+                                          foodMenuController.MenuController>(
+                                      builder: (menus) {
+                                    return DropdownButton<String>(
+                                      value: selectedValue,
+                                      // isDense: true,
+                                      isExpanded: true,
+                                      onChanged: (newValue) {
+                                        // _priceController.text =
+                                        //     formatCurrency.format(22000).toString();
+                                        // setState(() {
+                                        //   selectedValue = newValue;
+                                        // });
 
-                              itemName = MenuModel.fromJson(menu).name;
-                              itemPrice = MenuModel.fromJson(menu).price;
-                              selectedValue = newValue;
-                              _priceController.text = formatCurrency
-                                  .format(MenuModel.fromJson(menu).price)
-                                  .toString();
-                            });
+                                        setState(() {
+                                          Map<String, dynamic> menu =
+                                              menus.menuList.firstWhere(
+                                            (element) {
+                                              if (newValue ==
+                                                  MenuModel.fromJson(element)
+                                                      .id) {
+                                                return true;
+                                              }
+                                              return false;
+                                            },
+                                          );
+
+                                          itemName =
+                                              MenuModel.fromJson(menu).name;
+                                          itemPrice =
+                                              MenuModel.fromJson(menu).price;
+                                          selectedValue = newValue;
+                                          _priceController.text = formatCurrency
+                                              .format(MenuModel.fromJson(menu)
+                                                  .price)
+                                              .toString();
+                                        });
+                                      },
+                                      items: menus.menuList.map(
+                                        (element) {
+                                          return DropdownMenuItem<String>(
+                                            value:
+                                                MenuModel.fromJson(element).id,
+                                            child: Text(
+                                                MenuModel.fromJson(element)
+                                                    .name),
+                                          );
+                                        },
+                                      ).toList(),
+                                      // items: items.map((String value) {
+                                      //   return DropdownMenuItem<String>(
+                                      //     value: value,
+                                      //     child: Text(value),
+                                      //   );
+                                      // }).toList(),
+                                    );
+                                  }),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Flexible(
+                              flex: 2,
+                              child: CustomNumberTextField(
+                                textEditingController: _priceController,
+                                labelText: "price",
+                                hintText: "100000",
+                                readOnly: true,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Flexible(
+                              flex: 1,
+                              child: TextField(
+                                controller: _pcsController,
+                                decoration: new InputDecoration(
+                                  hintText: "0",
+                                  labelText: "pcs",
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10),
+                                  border: new OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                      const Radius.circular(8),
+                                    ),
+                                    borderSide: new BorderSide(
+                                      color: Colors.black,
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                ),
+                                keyboardType: TextInputType.numberWithOptions(
+                                    signed: false, decimal: false),
+                              ),
+                            ),
+                          ],
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            if (itemName != "" &&
+                                itemPrice != 0 &&
+                                _pcsController.value != 0) {
+                              itemPcs = int.parse(_pcsController.text);
+                              setState(() {
+                                _items.add(TransactionItemModel(
+                                  name: itemName,
+                                  price: itemPrice,
+                                  pcs: itemPcs,
+                                ));
+                                totalItems += (itemPcs * itemPrice);
+                                print(_items);
+                                FocusScope.of(context).unfocus();
+                              });
+                            }
                           },
-                          items: menus.menuList.map(
-                            (element) {
-                              return DropdownMenuItem<String>(
-                                value: MenuModel.fromJson(element).id,
-                                child: Text(MenuModel.fromJson(element).name),
+                          child: Container(
+                            width: double.maxFinite,
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            margin: EdgeInsets.symmetric(vertical: 5),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Appcolors.darkColor,
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Text(
+                              "add item",
+                              style: TextStyle(color: Appcolors.lightColor),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Wrap(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(flex: 1, child: Text("pcs")),
+                            Expanded(flex: 3, child: Text("name")),
+                            Expanded(flex: 2, child: Text("price")),
+                            Expanded(flex: 2, child: Text("total")),
+                          ],
+                        ),
+                        Divider(),
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: _items.length,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          flex: 1,
+                                          child: Text("${_items[index].pcs}")),
+                                      Expanded(
+                                          flex: 3,
+                                          child: Text("${_items[index].name}")),
+                                      Expanded(
+                                          flex: 2,
+                                          child: Text(
+                                              "${formatCurrency.format(_items[index].price)}")),
+                                      Expanded(
+                                          flex: 2,
+                                          child: Text(
+                                              "${formatCurrency.format(_items[index].price * _items[index].pcs)}")),
+                                    ],
+                                  ),
+                                  Divider(),
+
+                                  // (index != _items.length - 1)
+                                  //     ? Divider()
+                                  //     : Container(),
+                                ],
                               );
                             },
-                          ).toList(),
-                          // items: items.map((String value) {
-                          //   return DropdownMenuItem<String>(
-                          //     value: value,
-                          //     child: Text(value),
-                          //   );
-                          // }).toList(),
-                        );
-                      }),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Flexible(
-                  flex: 2,
-                  child: CustomNumberTextField(
-                    textEditingController: _priceController,
-                    labelText: "price",
-                    hintText: "100000",
-                    readOnly: true,
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Flexible(
-                  flex: 1,
-                  child: TextField(
-                    controller: _pcsController,
-                    decoration: new InputDecoration(
-                      hintText: "0",
-                      labelText: "pcs",
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                      border: new OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(8),
+                          ),
                         ),
-                        borderSide: new BorderSide(
-                          color: Colors.black,
-                          width: 1.0,
-                        ),
-                      ),
+                      ],
                     ),
-                    keyboardType: TextInputType.numberWithOptions(
-                        signed: false, decimal: false),
-                  ),
-                ),
-              ],
-            ),
-            GestureDetector(
-              onTap: () {
-                if (itemName != "" &&
-                    itemPrice != 0 &&
-                    _pcsController.value != 0) {
-                  itemPcs = int.parse(_pcsController.text);
-                  setState(() {
-                    _items.add(TransactionItemModel(
-                      name: itemName,
-                      price: itemPrice,
-                      pcs: itemPcs,
-                    ));
-                    totalItems += (itemPcs * itemPrice);
-                    print(_items);
-                  });
-                }
-              },
-              child: Container(
-                width: double.maxFinite,
-                padding: EdgeInsets.symmetric(vertical: 5),
-                margin: EdgeInsets.symmetric(vertical: 5),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Appcolors.darkColor,
-                    borderRadius: BorderRadius.circular(5)),
-                child: Text(
-                  "add item",
-                  style: TextStyle(color: Appcolors.lightColor),
+                    // Divider(),
+                  ],
                 ),
               ),
             ),
-            Row(
-              children: [
-                Expanded(flex: 1, child: Text("pcs")),
-                Expanded(flex: 3, child: Text("name")),
-                Expanded(flex: 2, child: Text("price")),
-                Expanded(flex: 2, child: Text("total")),
-              ],
-            ),
-            Divider(),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _items.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                              flex: 1, child: Text("${_items[index].pcs}")),
-                          Expanded(
-                              flex: 3, child: Text("${_items[index].name}")),
-                          Expanded(
-                              flex: 2,
-                              child: Text(
-                                  "${formatCurrency.format(_items[index].price)}")),
-                          Expanded(
-                              flex: 2,
-                              child: Text(
-                                  "${formatCurrency.format(_items[index].price * _items[index].pcs)}")),
-                        ],
-                      ),
-                      (index != _items.length - 1) ? Divider() : Container(),
-                    ],
-                  );
-                },
-              ),
-            ),
-            Divider(),
             Container(
               margin: EdgeInsets.only(top: 10),
               child: Row(
