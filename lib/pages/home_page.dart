@@ -172,6 +172,9 @@ class _HomePageState extends State<HomePage> {
       middleText: 'Are you sure the transaction is paid off?',
       actions: [
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.greenColor,
+              foregroundColor: Appcolors.whiteColor),
           onPressed: () {
             updateIsPaidOff(id);
             Get.back(result: true); // Return true when "Yes" is pressed
@@ -185,6 +188,9 @@ class _HomePageState extends State<HomePage> {
           child: Text('Yes'),
         ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.redColor,
+              foregroundColor: Appcolors.whiteColor),
           onPressed: () {
             Get.back(result: false); // Return false when "No" is pressed
           },
