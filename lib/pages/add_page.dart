@@ -33,48 +33,6 @@ class _AddPageState extends State<AddPage> {
               child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   child: AddSalePage())),
-          // Expanded(
-          //   child: DefaultTabController(
-          //     length: 2,
-          //     child: Column(
-          //       mainAxisSize: MainAxisSize.min,
-          //       children: <Widget>[
-          //         Container(
-          //           child: Material(
-          //             color: Appcolors.lightColor,
-          //             child: Theme(
-          //               data: ThemeData().copyWith(
-          //                 splashColor: Appcolors.mediumColor,
-          //               ),
-          //               child: TabBar(
-          //                   unselectedLabelColor: Appcolors.darkGreyColor,
-          //                   labelColor: Appcolors.darkColor,
-          //                   indicatorColor: Appcolors.darkColor,
-          //                   tabs: [
-          //                     Tab(text: "Sale"),
-          //                     Tab(text: "Purchase"),
-          //                   ]),
-          //             ),
-          //           ),
-          //         ),
-          //         Expanded(
-          //           child: Container(
-          //             margin:
-          //                 EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          //             child: TabBarView(children: [
-          //               Container(
-          //                 child: AddSalePage(),
-          //               ),
-          //               Container(
-          //                 child: Text("Material Purchase"),
-          //               ),
-          //             ]),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // )
         ],
       )),
     );
