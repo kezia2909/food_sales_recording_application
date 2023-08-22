@@ -1,5 +1,6 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+
 import 'package:food_sales_recording_application/controllers/customer_controller.dart';
 import 'package:food_sales_recording_application/models/menu_model.dart';
 import 'package:food_sales_recording_application/models/transaction_item_model.dart';
@@ -85,8 +86,10 @@ class _AddSalePageState extends State<AddSalePage> {
 
   ScrollController _scrollController = ScrollController();
   bool _scrollEnabled = true;
+  DateTime? selectedDate;
 
   void _refreshData() async {
+    selectedDate = DateTime.now();
     totalSale = 0;
     totalItems = 0;
     deliveryFee = 0;
@@ -151,6 +154,13 @@ class _AddSalePageState extends State<AddSalePage> {
     });
   }
 
+  String formatDateString(String dateString) {
+    DateTime dateTime = DateTime.parse(dateString);
+    DateFormat formatter = DateFormat("E, d MMM ''yy");
+    String formattedDate = formatter.format(dateTime);
+    return formattedDate;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -172,6 +182,46 @@ class _AddSalePageState extends State<AddSalePage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              TextFormField(
+                onTap: () {
+                  showDatePicker(
+                    context: context,
+                    initialDate: selectedDate ?? DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  ).then((pickedDate) {
+                    if (pickedDate != null) {
+                      setState(() {
+                        selectedDate = pickedDate;
+                      });
+                    }
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: 'Select a date',
+                  suffixIcon: Icon(Icons.calendar_today),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  border: new OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(8),
+                    ),
+                    borderSide: new BorderSide(
+                      color: Colors.black,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+                readOnly: true,
+                controller: TextEditingController(
+                  text: selectedDate != null
+                      ? formatDateString(selectedDate.toString())
+                      : formatDateString(DateTime.now().toString()),
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
               InputDecorator(
                 decoration: InputDecoration(
                   contentPadding:
