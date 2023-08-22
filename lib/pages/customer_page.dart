@@ -61,11 +61,14 @@ class _CustomerPageState extends State<CustomerPage> {
     String address = _editAddressController.text;
 
     if (name.isEmpty) {
-      print("name is empty");
+      print("name is emptys");
+      // Get.back();
       customSnackbar("Please enter customer name");
+      _showEditDialog(id);
     } else if (address.isEmpty) {
       print("address is empty");
       customSnackbar("Please enter customer address");
+      _showEditDialog(id);
     } else {
       CustomerModel updateCustomer =
           CustomerModel(name: name, address: address);
@@ -81,7 +84,6 @@ class _CustomerPageState extends State<CustomerPage> {
               isError: false, title: "Success");
         } else {
           customSnackbar("Failed to update customer");
-
           print("failed to update customer : ${value.message}");
         }
       });
@@ -93,8 +95,8 @@ class _CustomerPageState extends State<CustomerPage> {
     deleteCustomerController.deleteCustomer(id).then(
       (value) {
         if (value) {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          currentFocus.unfocus();
+          // FocusScopeNode currentFocus = FocusScope.of(context);
+          // currentFocus.unfocus();
           customSnackbar("Successfully deleted customer",
               isError: false, title: "Success");
         } else {
@@ -132,8 +134,8 @@ class _CustomerPageState extends State<CustomerPage> {
           ),
           GestureDetector(
             onTap: () {
-              _updateCustomer(id);
               Get.back();
+              _updateCustomer(id);
             },
             child: Container(
               width: double.maxFinite,
@@ -147,6 +149,36 @@ class _CustomerPageState extends State<CustomerPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showDeleteDialog(String id) {
+    Get.defaultDialog(
+      title: 'Delete Confirmation',
+      middleText: 'Are you sure delete customer?',
+      backgroundColor: Appcolors.lightColor,
+      actions: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.greenColor,
+              foregroundColor: Appcolors.whiteColor),
+          onPressed: () {
+            Get.back(); // Return true when "Yes" is pressed
+            _deleteCustomer(id);
+            setState(() {});
+          },
+          child: Text('Yes'),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.redColor,
+              foregroundColor: Appcolors.whiteColor),
+          onPressed: () {
+            Get.back(); // Return false when "No" is pressed
+          },
+          child: Text('No'),
+        ),
+      ],
     );
   }
 
@@ -245,7 +277,7 @@ class _CustomerPageState extends State<CustomerPage> {
                                 //     CustomerModel.fromJson(
                                 //             customers.customerList[index])
                                 //         .id!),
-                                onTap: () => _deleteCustomer(
+                                onTap: () => _showDeleteDialog(
                                     CustomerModel.fromJson(
                                             customers.customerList[index])
                                         .id!),

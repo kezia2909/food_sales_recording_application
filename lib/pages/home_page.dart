@@ -14,6 +14,8 @@ import 'package:get/get.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 import 'package:intl/intl.dart';
 
+import '../widgets/currency_input_formatter.dart';
+import '../widgets/custom_snackbar.dart';
 import '../widgets/detail_text.dart';
 import '../widgets/trailing_item_history.dart';
 
@@ -41,6 +43,7 @@ class _HomePageState extends State<HomePage> {
   // bool isPaidOff = false;
 
   Map<String, List<Map<String, dynamic>>> groupedDataSales = {};
+  final TextEditingController _editTargetController = TextEditingController();
 
   void _refreshData() async {
     final totalThisMonth = await SaleSQLController.getTotalSalesThisMonth();
@@ -169,6 +172,9 @@ class _HomePageState extends State<HomePage> {
       middleText: 'Are you sure the transaction is paid off?',
       actions: [
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.greenColor,
+              foregroundColor: Appcolors.whiteColor),
           onPressed: () {
             updateIsPaidOff(id);
             Get.back(result: true); // Return true when "Yes" is pressed
@@ -182,6 +188,9 @@ class _HomePageState extends State<HomePage> {
           child: Text('Yes'),
         ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Appcolors.redColor,
+              foregroundColor: Appcolors.whiteColor),
           onPressed: () {
             Get.back(result: false); // Return false when "No" is pressed
           },
@@ -196,6 +205,54 @@ class _HomePageState extends State<HomePage> {
     DateFormat formatter = DateFormat("E, d MMM ''yy");
     String formattedDate = formatter.format(dateTime);
     return formattedDate;
+  }
+
+  void _showEditDialog() {
+    Get.defaultDialog(
+      title: "Edit Target",
+      cancel: IconButton(
+        icon: Icon(Icons.cancel),
+        onPressed: () {
+          Get.back();
+        },
+      ),
+      backgroundColor: Appcolors.lightColor,
+      content: Column(
+        children: [
+          TextField(
+            controller: _editTargetController,
+            decoration: InputDecoration(labelText: 'Enter Target'),
+            inputFormatters: [CurrencyInputFormatter()],
+            keyboardType:
+                TextInputType.numberWithOptions(signed: false, decimal: false),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          GestureDetector(
+            onTap: () {
+              String target = _editTargetController.text;
+              print("TARGET : $target");
+              Get.back();
+
+              if (target.isEmpty) {
+                customSnackbar("Please enter target for this month");
+              }
+              _showEditDialog();
+            },
+            child: Container(
+              width: double.maxFinite,
+              padding: EdgeInsets.symmetric(vertical: 8),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Appcolors.darkColor,
+                  borderRadius: BorderRadius.circular(8)),
+              child: TitleText(text: "Update"),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -217,12 +274,12 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TitleText(
-                    text: formatDateString(DateTime.now().toString()),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
+                  // TitleText(
+                  //   text: formatDateString(DateTime.now().toString()),
+                  // ),
+                  // SizedBox(
+                  //   height: 8,
+                  // ),
                   Row(
                     children: [
                       IconBox(
@@ -243,10 +300,29 @@ class _HomePageState extends State<HomePage> {
                               color: Appcolors.lightColor,
                               size: 10,
                             ),
-                            TitleText(
-                              text:
-                                  "\IDR ${formatCurrency.format(_targetThisMonth).toString()}",
-                              isBold: true,
+                            Row(
+                              children: [
+                                TitleText(
+                                  text:
+                                      "\IDR ${formatCurrency.format(_targetThisMonth).toString()}",
+                                  isBold: true,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    _editTargetController.text = formatCurrency
+                                        .format(_targetThisMonth)
+                                        .toString();
+                                    _showEditDialog();
+                                  },
+                                  child: Icon(
+                                    Icons.edit,
+                                    color: Appcolors.darkGreyColor,
+                                  ),
+                                )
+                              ],
                             ),
                             Container(
                               height: 24,
