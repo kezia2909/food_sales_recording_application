@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 void customSnackbar(String message,
     {bool isError = true, String title = "Error"}) {
+  print("SNACK BAR");
   Get.snackbar(title, message,
       titleText: TitleText(text: title),
       messageText: Text(
