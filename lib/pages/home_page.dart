@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
   final formatCurrency = NumberFormat.decimalPattern();
   int tempIndexGroup = -1;
   int tempIndexItem = -1;
+
   // bool isPaidOff = false;
 
   Map<String, List<Map<String, dynamic>>> groupedDataSales = {};
@@ -402,7 +403,9 @@ class _HomePageState extends State<HomePage> {
             ),
             Expanded(
               child: _dataUnpaid.length == 0
-                  ? Container(child: Text("no data"))
+                  ? Container(
+                      child: Center(
+                          child: Text("There are no unpaid transactions")))
                   : ListView.builder(
                       itemCount: groupedDataSales.length,
                       itemBuilder: (BuildContext context, int indexGroup) {
